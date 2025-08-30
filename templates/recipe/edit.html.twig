@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title "Recettes: " ~ recipe.title %}
+
+{% block body %}
+    <h1> {{ recipe.title }} </h1>
+
+    {{ form(form)}}
+{% endblock %}
