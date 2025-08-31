@@ -6,5 +6,12 @@
 {% block body %}
     <h1> {{ recipe.title }} </h1>
 
+    {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
+    {% if imagePath %}
+        <img src="{{ imagePath | imagine_filter('thumb_200x200') }}" alt="Image de {{ recipe.title }}" class="img-thumbnail" style="width: 200px; height: 200px;">
+    {% else %}
+        <img src="{{ asset('images/default-recipe.webp') | imagine_filter('thumb_200x200') }}" alt="Image par défaut" class="img-thumbnail" style="width: 200px; height: 200px;>
+    {% endif %}
+
     {{ form(form)}}
 {% endblock %}

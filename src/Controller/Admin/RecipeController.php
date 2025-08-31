@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request; 
@@ -11,30 +12,31 @@ use App\Repository\RecipeRepository;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/recettes', name: 'admin.recipe.')]
 final class RecipeController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(Request $request, RecipeRepository $repository): Response
+    #[IsGranted('ROLE_ADMIN')]
+    public function index(Request $request, RecipeRepository $repository, EntityManagerInterface $em): Response
     {
+        // $this->denyAccessUnlessGranted('ROLE_USER');
         $recipes = $repository->findWithDurationLowerThan(20);
         // $em->remove($recipes[0]); Supprimer une recette en base donnée
         // $em->flush();
 
-        // $recipe = new Recipe(); Ajouter nouvelle recette en base de donnée
-        // $recipe->setTitle('Barbe à papa')
-        //     ->setSlug('barbe-papa')
-        //     ->setContent('Mettez du sucre')
-        //     ->setDuration('2')
+        // $category = (new Category()) //Ajouter nouvelle recette en base de donnée
+        //     ->setUpdateAt(new \DateTimeImmutable())
         //     ->setCreatedAt(new \DateTimeImmutable())
-        //     ->setUpdateAt(new \DateTimeImmutable());
+        //     ->setName('demo')
+        //     ->setName('demo');
+        // $recipes[0]->setCategory($category);
+        // $em->flush();
+            
         
-        //     $em->persist($recipe);
-        //     $em->flush();
-        
-        // $recipes[0]->setTitle('Pates bolognaises'); Modifier titre base de donnée
+        // $recipes[0]->setTitle('Pates bolognaises'); //Modifier titre base de donnée
         // $em->flush();  
 
         return $this->render('admin/recipe/index.html.twig' , [
@@ -60,7 +62,6 @@ final class RecipeController extends AbstractController
 
     #[Route('/{id}', name:'edit', methods: ['GET', 'POST'], requirements: ['id'=> Requirement::DIGITS])]
     public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em) {
-
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

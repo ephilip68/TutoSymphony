@@ -1,6 +1,5 @@
 {% extends 'admin/admin.html.twig' %}
 
-
 {% block title %} Toutes les recettes {% endblock %}
 
 {% block body %}
@@ -8,33 +7,45 @@
         lorem ipsum rghrgrghrghofshhhhhhhhhhhhhhhhhhhhhhhhgngs jgijgj grgj rgjzgjzpgzg z
     </p>
     <p>
-        <a class="btn btn-primary btn-sm" href="{{ path('admin.recipe.create') }}" >Créer une recette</a>
+        <a class="btn btn-primary btn-sm" href="{{ path('admin.recipe.create') }}">Créer une recette</a>
     </p>
-    <table class="table">
+    <table class="table align-middle text-center">
         <thead>
         <tr>
+            <th>Image</th>
             <th>Titre</th>
-            <th style="width: 150px">Actions</th>
+            <th>Catégorie</th>
+            <th style="width: 180px">Actions</th>
         </tr>
         </thead>
         <tbody>
-        </tbody>
         {% for recipe in recipes %}
         <tr>
-            <td>
+            <td class="align-middle text-center">
+                {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
+                {% if imagePath %}
+                    <img src="{{ imagePath | imagine_filter('thumb_100x100') }}" alt="Image de {{ recipe.title }}" class="img-thumbnail" style="width: 100px; height: 100px;">
+                {% else %}
+                    <img src="{{ asset('images/default-recipe.webp') | imagine_filter('thumb_100x100') }}" alt="Image par défaut" class="img-thumbnail" style="width: 100px; height: 100px;">
+                {% endif %}
+            </td>
+            <td class="align-middle text-center">
                 <a href="{{ path('admin.recipe.edit', {id: recipe.id}) }}">{{ recipe.title }}</a>
             </td>
-            <td>
-                <div class="d-flex gap-1">
-                    <a class="btn btn-sm btn-primary" href="{{ path('admin.recipe.edit', { id: recipe.id }) }}" >Modifier</a>
-                    <form action="{{ path('admin.recipe.delete', { id: recipe.id }) }}" method="post">
+            <td class="align-middle text-center">
+                {{ recipe.category.name | default('') }}
+            </td>
+            <td class="align-middle text-center">
+                <div class="d-flex justify-content-center gap-1">
+                    <a class="btn btn-sm btn-primary" href="{{ path('admin.recipe.edit', { id: recipe.id }) }}">Modifier</a>
+                    <form action="{{ path('admin.recipe.delete', { id: recipe.id }) }}" method="post" onsubmit="return confirm('Supprimer cette recette ?');">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-sm btn-danger" >Supprimer</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
                     </form>
                 </div>
             </td>
         </tr>
-        {% endfor%}
+        {% endfor %}
+        </tbody>
     </table>
-    
 {% endblock %}
