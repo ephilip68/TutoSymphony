@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter Nature - Bienvenue</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(135deg, #e0f7e9, #f5fff8);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 1.5rem;
+      border: 2px solid #4a7c59;
+      box-shadow: 0 10px 30px rgba(46,77,46,0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #4a7c59;
+      color: #ffffff;
+      text-align: center;
+      padding: 40px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .header::before { content: '🍃'; margin-right: 0.5rem; }
+    .header::after { content: '🌿'; margin-left: 0.5rem; }
+
+    .content {
+      padding: 35px 25px;
+      color: #4a7c4a;
+    }
+
+    .content p { margin-bottom: 1.5rem; line-height: 1.6; }
+
+    /* Message de bienvenue aligné à gauche */
+    .welcome-message {
+      text-align: left;
+      margin-bottom: 25px;
+    }
+
+    .section { margin-bottom: 30px; text-align: center; }
+
+    .section img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .button-container { text-align: center; }
+
+    .button {
+      display: inline-block;
+      background-color: #4a7c59;
+      color: #ffffff;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 12px 30px;
+      border-radius: 0.75rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover { background-color: #36563f; }
+
+    .unsubscribe {
+      display: block;
+      font-size: 0.85rem;
+      color: #4a7c4a;
+      text-decoration: underline;
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 700px) {
+      .header { font-size: 1.8rem; padding: 30px 15px; }
+      .content { padding: 25px 15px; }
+      .button { padding: 10px 25px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      Bienvenue à notre Newsletter
+    </div>
+
+    <div class="content">
+      <!-- Message de bienvenue -->
+      <div class="welcome-message">
+        <p>Bonjour,</p>
+        <p>Merci de vous être abonné à notre newsletter ! Vous recevrez chaque semaine des recettes saines et gourmandes, ainsi que des astuces pour une vie plus équilibrée et naturelle 🌿.</p>
+      </div>
+
+      <!-- Affichage dynamique d'une seule recette -->
+      {% if recipes is not empty %}
+        {% set recipe = recipes[0] %}
+        <div class="section">
+          <img src="{{ recipe.image}}" alt="{{ recipe.title }}">
+          <p class="section-title">{{ recipe.title }}</p>
+          <p>{{ recipe.description }}</p>
+          <div class="button-container">
+            <a href="{{ recipe.link }}" class="button">Voir la recette</a>
+          </div>
+        </div>
+      {% endif %}
+
+      <a href="{{ url('newsletter_unsubscribe', { token: subscriber.unsubscribeToken }) }}" class="unsubscribe">
+        Se désinscrire
+      </a>
+    </div>
+  </div>
+</body>
+</html>

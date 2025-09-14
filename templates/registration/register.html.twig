@@ -1,15 +1,202 @@
+{% set body_class = 'register-page' %}
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    body.register-page {
+      font-family: 'Open Sans', sans-serif;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') center center / cover no-repeat;
+      color: #2f4f4f;
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body.register-page::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(232, 245, 233, 0.5);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-control:focus {
+        border-color: #7ba77b !important;
+        box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.3) !important;
+        outline: none;
+        background-color: #ffffff;
+    }
+    input.form-control:-webkit-autofill,
+    input.form-control:-webkit-autofill:hover,
+    input.form-control:-webkit-autofill:focus {
+        background-color: #e6f2e9 !important; /* vert pastel clair */
+        color: #2f4f4f !important; /* texte foncé */
+        -webkit-box-shadow: 0 0 0px 1000px #e6f2e9 inset !important; /* fond vert appliqué */
+        border-color: #7ba77b !important; /* bordure verte douce */
+        transition: background-color 5000s ease-in-out 0s;
+    }
+  </style>
+{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="container" style="max-width: 700px;">
+    <div style="
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 1.5rem;
+      padding: 3rem 3.5rem;
+      box-shadow: 0 15px 40px rgba(122, 167, 123, 0.2);
+      border: 1px solid rgba(122, 167, 123, 0.15);
+      backdrop-filter: blur(10px);
+    ">
 
-    <h1>Register</h1>
+      <h1 class="h3 mb-4 text-center fw-bold d-flex align-items-center justify-content-center gap-2" style="
+        font-size: 2rem; 
+        color: #4a7c59;
+        font-family: 'Playfair Display', serif;
+        letter-spacing: 1px;
+      ">
+        <i class="fas fa-user-plus" style="font-size: 2rem; color: #7ba77b;"></i>
+        Créer un compte
+      </h1>
 
-    {{ form_errors(registrationForm) }}
+      {% if app.user %}
+        <div class="alert alert-success text-center" style="border-radius: 0.75rem;">
+          Vous êtes déjà connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.
+          <a href="{{ path('app_logout') }}" style="color: #4a7c59; font-weight: 600;">Se déconnecter</a>
+        </div>
+      {% endif %}
 
-    {{ form(registrationForm) }}
+      {% for message in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" style="border-radius: 0.75rem;">{{ message }}</div>
+      {% endfor %}
+
+      {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+      {{ form_widget(registrationForm._token) }}
+
+      <div class="row g-4">
+        <div class="col-md-12">
+          <label class="form-label fw-semibold" style="color: #2f4f4f;">
+            <i class="fas fa-user me-2" style="color: #7ba77b;"></i> Nom d'utilisateur
+          </label>
+          {{ form_widget(registrationForm.username, {
+            'attr': {
+              'class': 'form-control',
+              'placeholder': 'Votre pseudo',
+              'style': 'border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;'
+            }
+          }) }}
+          {{ form_errors(registrationForm.username) }}
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label fw-semibold" style="color: #2f4f4f;">
+            <i class="fas fa-envelope me-2" style="color: #7ba77b;"></i> Email
+          </label>
+          {{ form_widget(registrationForm.email, {
+            'attr': {
+              'class': 'form-control',
+              'placeholder': 'Votre adresse email',
+              'style': 'border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;'
+            }
+          }) }}
+          {{ form_errors(registrationForm.email) }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold" style="color: #2f4f4f;">
+            <i class="fas fa-lock me-2" style="color: #7ba77b;"></i> Mot de passe
+          </label>
+          {{ form_widget(registrationForm.plainPassword.first, {
+            'attr': {
+              'class': 'form-control',
+              'placeholder': 'Mot de passe',
+              'style': 'border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;'
+            }
+          }) }}
+          {{ form_errors(registrationForm.plainPassword.first) }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold" style="color: #2f4f4f;">
+            <i class="fas fa-lock me-2" style="color: #7ba77b;"></i> Confirmez le mot de passe
+          </label>
+          {{ form_widget(registrationForm.plainPassword.second, {
+            'attr': {
+              'class': 'form-control',
+              'placeholder': 'Répétez le mot de passe',
+              'style': 'border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;'
+            }
+          }) }}
+          {{ form_errors(registrationForm.plainPassword.second) }}
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            {{ form_widget(registrationForm.agreeTerms, {
+              'attr': {
+                'class': 'form-check-input',
+                'style': 'border-radius: 0.35rem; border-color: #7ba77b;'
+              }
+            }) }}
+            {{ form_label(registrationForm.agreeTerms, null, {
+              'label_attr': {
+                'class': 'form-check-label',
+                'style': 'color: #2f4f4f; font-weight: 600;'
+              }
+            }) }}
+            {{ form_errors(registrationForm.agreeTerms) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-grid mt-4">
+        {{ form_widget(registrationForm.save, {
+          'attr': {
+            'class': 'btn rounded-pill fw-semibold',
+            'style': 'background-color: #4a7c59; color: #fff; padding: 12px 0; font-size: 1.1rem; border: none; box-shadow: 0 6px 20px rgba(122, 167, 123, 0.3); transition: background-color 0.3s ease;',
+            'onmouseover': "this.style.backgroundColor='#3d684a'",
+            'onmouseout': "this.style.backgroundColor='#4a7c59'"
+          }
+        }) }}
+      </div>
+
+      {{ form_end(registrationForm) }}
+
+      <div class="text-center pt-3 mt-4">
+        <small style="color: #2f4f4f;">
+          Vous avez déjà un compte ?
+          <a href="{{ path('app_login') }}" style="
+            color: #7ba77b;
+            font-weight: 600;
+            text-decoration: none;
+          "
+            onmouseover="this.style.textDecoration='underline'; this.style.color='#4a7c59';"
+            onmouseout="this.style.textDecoration='none'; this.style.color='#7ba77b';">
+            Se connecter
+          </a>
+        </small>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

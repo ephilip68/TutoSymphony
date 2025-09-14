@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Repository\RecipeRepository;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,6 +39,7 @@ final class CategoryController extends AbstractController
             return $this->redirectToRoute('admin.category.index');
         }
          return $this->render('admin/category/create.html.twig' ,[
+            'category' => $category,
             'form' => $form
         ]);
     }
@@ -64,5 +66,16 @@ final class CategoryController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'La catégorie a bien été suprimée');
         return $this->redirectToRoute('admin.category.index');
-    }     
+    }
+    
+    #[Route('/recipe/{slug}', name: 'recipes_by_category')]
+    public function byCategory(string $slug, RecipeRepository $recipeRepo): Response
+    {
+        $recipes = $recipeRepo->findByCategorySlug($slug);
+
+        return $this->render('recipe/category.html.twig', [
+            'recipes' => $recipes,
+            'category' => $slug,
+        ]);
+    }
 }

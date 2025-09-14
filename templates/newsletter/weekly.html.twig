@@ -1,0 +1,68 @@
+{# templates/newsletter/weekly.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter Hebdomadaire</title>
+</head>
+<body style="margin:0; padding:0; font-family:'Open Sans', sans-serif; background:#f5fff8; display:flex; justify-content:center; align-items:center; min-height:100vh;">
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" align="center" style="background:#f5fff8;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="700" cellspacing="0" cellpadding="0" style="background:#ffffff; border-radius:1.5rem; box-shadow:0 8px 30px rgba(46,77,46,0.2); border-collapse:separate; border-spacing:0;">
+
+          {# Header #}
+          <tr>
+            <td style="background:#4a7c59; color:#ffffff; text-align:center; padding:35px; font-family:'Playfair Display', serif; font-size:2rem; font-weight:700; border-top-left-radius:1.5rem; border-top-right-radius:1.5rem;">
+              🍃 Nouveautés de la semaine 🌿
+            </td>
+          </tr>
+
+          {# Message de bienvenue #}
+          <tr>
+            <td style="padding:30px; color:#4a7c4a; font-size:16px; line-height:1.6; text-align:left;">
+              <p>Bonjour,</p>
+              <p>Chaque semaine, découvrez des recettes saines, gourmandes et des astuces pour une vie plus équilibrée et naturelle 🌿.</p>
+            </td>
+          </tr>
+
+          {# Boucle sur les recettes #}
+          {% for recipe in recipes %}
+          <tr>
+            <td style="padding:20px; text-align:center;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="text-align:center;">
+                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}" width="600" style="max-width:100%; border-radius:1rem; display:block; margin:0 auto;">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:15px; text-align:center; color:#4a7c4a;">
+                    <p style="font-weight:bold; font-size:18px; margin:0 0 10px 0;">{{ recipe.title }}</p>
+                    <p style="margin:0 0 15px 0;">{{ recipe.description }}</p>
+                    <a href="{{ recipe.link }}" style="display:inline-block; background-color:#4a7c59; color:#ffffff; text-decoration:none; padding:12px 25px; border-radius:0.75rem;">
+                      Voir la recette
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {% endfor %}
+
+          {# Lien désinscription #}
+          <tr>
+            <td style="padding:25px; text-align:center; font-size:12px; color:#4a7c4a;">
+              <a href="{{ subscriber.unsubscribeToken ? 'http://tutosymphony.test' ~ path('newsletter_unsubscribe', { token: subscriber.unsubscribeToken }) : '#' }}" style="color:#4a7c4a; text-decoration:underline;">Se désinscrire</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

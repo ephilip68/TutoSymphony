@@ -1,0 +1,66 @@
+
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tutosymphony-php
+    volumes:
+      - .:/var/www/html:cached
+    depends_on:
+      - database
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: postgresql://symfony:symfony@database:5432/symfony?serverVersion=16&charset=utf8
+    working_dir: /var/www/html
+
+  # Web server (sert /public) + passe PHP à php-fpm
+  nginx:
+    image: nginx:alpine
+    container_name: tutosymphony-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:cached
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - php
+
+  # Node pour Webpack Encore (watch auto)
+  node:
+    image: node:20
+    container_name: tutosymphony-node
+    working_dir: /var/www/html
+    environment:
+      # Améliore la détection des changements sur Windows/WSL
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - .:/var/www/html
+    command: >
+      sh -c "npm ci || npm install && npm run dev -- --watch"
+    depends_on:
+      - php
+
+  database:
+    image: postgres:16-alpine
+    container_name: tutosymphony-database
+    environment:
+      POSTGRES_DB: symfony
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  mailer:
+    image: axllent/mailpit
+    container_name: tutosymphony-mailer
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  db_data:

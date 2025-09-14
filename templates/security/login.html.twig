@@ -1,34 +1,151 @@
+{% set body_class = 'login-page' %}
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    body.login-page {
+      font-family: 'Open Sans', sans-serif;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') center center / cover no-repeat;
+      color: #2f4f4f;
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body.login-page::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(232, 245, 233, 0.5);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-control:focus {
+        border-color: #7ba77b !important;
+        box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.3) !important;
+        outline: none;
+        background-color: #ffffff;
+    }
+    input.form-control:-webkit-autofill,
+    input.form-control:-webkit-autofill:hover,
+    input.form-control:-webkit-autofill:focus {
+        background-color: #e6f2e9 !important; /* vert pastel clair */
+        color: #2f4f4f !important; /* texte foncé */
+        -webkit-box-shadow: 0 0 0px 1000px #e6f2e9 inset !important; /* fond vert appliqué */
+        border-color: #7ba77b !important; /* bordure verte douce */
+        transition: background-color 5000s ease-in-out 0s;
+        }
+
+    
+  </style>
+{% endblock %}
 
 {% block body %}
-<form method="post">
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="container" style="
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      box-shadow: 0 15px 40px rgba(122, 167, 123, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(122, 167, 123, 0.15);
+    ">
+
+    <h1 class="text-center fw-bold" style="
+        color: #4a7c59;
+        font-size: 2rem;
+        font-family: 'Playfair Display', serif;
+        letter-spacing: 1px;
+        margin-bottom: 2.5rem;
+      ">
+      <i class="fas fa-sign-in-alt" style="color: #7ba77b; margin-right: 10px;"></i>
+      Connexion
+    </h1>
+
     {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+      <div class="alert alert-danger text-center" style="border-radius: 0.75rem;">
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+      </div>
     {% endif %}
 
     {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
+      <div class="alert alert-success text-center" style="border-radius: 0.75rem;">
+        Vous êtes déjà connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.
+        <a href="{{ path('app_logout') }}" style="color: #4a7c59; font-weight: 600;">Se déconnecter</a>
+      </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
+    <form method="post">
+      <div class="mb-4">
+        <label for="inputUsername" class="form-label fw-semibold" style="color: #2f4f4f;">
+          <i class="fas fa-user me-2" style="color: #7ba77b;"></i> Nom d’utilisateur ou Email
         </label>
-    </div>
+        <input type="text" name="username" id="inputUsername" value="{{ last_username }}" required autofocus autocomplete="username"
+               class="form-control"
+               style="border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;">
+      </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+      <div class="mb-4">
+        <label for="inputPassword" class="form-label fw-semibold" style="color: #2f4f4f;">
+          <i class="fas fa-lock me-2" style="color: #7ba77b;"></i> Mot de passe
+        </label>
+        <input type="password" name="password" id="inputPassword" required autocomplete="current-password"
+               class="form-control"
+               style="border-radius: 0.75rem; border: 1px solid #7ba77b; background-color: #ffffff; padding: 10px 14px; color: #2f4f4f; font-weight: 600;">
+      </div>
+
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+      <div class="form-check mb-4">
+        <input type="checkbox" class="form-check-input" id="rememberMe" name="_remember_me" checked
+               style="border-color: #7ba77b;">
+        <label for="rememberMe" class="form-check-label" style="color: #2f4f4f; font-weight: 600;">Se souvenir de moi</label>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn rounded-pill fw-semibold" style="
+            background-color: #4a7c59;
+            color: white;
+            padding: 14px 0;
+            font-size: 1.1rem;
+            border: none;
+            box-shadow: 0 6px 20px rgba(122, 167, 123, 0.3);
+            transition: background-color 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#3d684a'"
+          onmouseout="this.style.backgroundColor='#4a7c59'">
+          Connexion
+        </button>
+      </div>
+
+      <p class="text-center" style="color: #2f4f4f;">
+        Vous n'avez pas de compte ?
+        <a href="{{ path('app_register') }}" class="fw-semibold"
+           style="color: #7ba77b; text-decoration: none;"
+           onmouseover="this.style.color='#4a7c59'; this.style.textDecoration='underline';"
+           onmouseout="this.style.color='#7ba77b'; this.style.textDecoration='none';">
+          Inscription
+        </a>
+      </p>
+    </form>
+  </div>
+</div>
 {% endblock %}

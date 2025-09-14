@@ -44,6 +44,28 @@ class RecipeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findLatest(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByCategorySlug(string $slug): array
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.category', 'c')
+            ->where('c.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
     //    /**
     //     * @return Recipe[] Returns an array of Recipe objects
     //     */

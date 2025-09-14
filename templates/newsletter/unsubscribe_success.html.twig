@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Désinscription</title>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #f5fff8;
+      color: #2f4f4f;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      background-color: #ffffff;
+      padding: 30px 25px;
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 20px rgba(46, 77, 46, 0.15);
+      text-align: center;
+    }
+    h2 {
+     color: #2e7d32;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1rem;
+      color: #4a7c4a;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    a.btn-back {
+      display: inline-block;
+      background-color: #388e3c;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+    a.btn-back:hover {
+      background-color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Vous êtes désabonné 🌱</h2>
+    <p>Votre adresse email a été retirée de notre newsletter.</p>
+    <a href="{{ path('home') }}" class="btn-back">Retour au site</a>
+  </div>
+</body>
+</html>

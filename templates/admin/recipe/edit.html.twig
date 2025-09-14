@@ -1,17 +1,154 @@
 {% extends 'admin/admin.html.twig' %}
 
+{% block title %}Modifier la recette : {{ recipe.title }}{% endblock %}
 
-{% block title "Recettes: " ~ recipe.title %}
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(122, 167, 123, 0.65), rgba(74, 124, 89, 0.65)) fixed,
+        url('{{ vich_uploader_asset(recipe, 'thumbnailFile') ?? asset("images/default-recipe.webp") }}') no-repeat center center fixed;
+      background-size: cover;
+      background-blend-mode: overlay;
+      color: #2f4f4f;
+    }
+  </style>
+{% endblock %}
 
 {% block body %}
-    <h1> {{ recipe.title }} </h1>
+  <div class="container" style="padding: 2rem 0; padding-top: 160px;">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+      <div class="card-header text-white rounded-top-4 py-3">
+        <h2 class="mb-0"><i class="fas fa-pen me-2"></i>Modifier la recette : {{ recipe.title }}</h2>
+      </div>
 
-    {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
-    {% if imagePath %}
-        <img src="{{ imagePath | imagine_filter('thumb_200x200') }}" alt="Image de {{ recipe.title }}" class="img-thumbnail" style="width: 200px; height: 200px;">
-    {% else %}
-        <img src="{{ asset('images/default-recipe.webp') | imagine_filter('thumb_200x200') }}" alt="Image par défaut" class="img-thumbnail" style="width: 200px; height: 200px;>
-    {% endif %}
+      <div class="card-body p-4">
+        {{ form_start(form) }}
 
-    {{ form(form)}}
+        <div class="row">
+          <!-- COLONNE GAUCHE -->
+          <div class="col-md-5 border-end pe-4">
+            <h4>Informations générales</h4>
+
+            <div class="mb-3">
+              {{ form_label(form.title, '<i class="fas fa-heading me-2" style="color:#7ba77b"></i>Titre', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.title, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.slug, '<i class="fas fa-link me-2" style="color:#7ba77b"></i>Slug', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.slug, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.slogan, '<i class="fas fa-quote-left me-2" style="color:#7ba77b"></i>Slogan', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.slogan, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.duration, '<i class="fas fa-clock me-2" style="color:#7ba77b"></i>Durée', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.duration, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.category, '<i class="fas fa-folder-open me-2" style="color:#7ba77b"></i>Catégorie', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.category, { 'attr': { 'class': 'form-select shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.thumbnailFile, '<i class="fas fa-image me-2" style="color:#7ba77b"></i>Image', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.thumbnailFile, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
+              {% if recipe.thumbnail %}
+                <div class="mt-2">
+                  <img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') | imagine_filter('thumb_200x200') }}"
+                       alt="{{ recipe.title }}" class="img-thumbnail rounded shadow-sm">
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- COLONNE DROITE -->
+          <div class="col-md-7 ps-4">
+            <h4>Contenu & Ingrédients</h4>
+
+            <div class="mb-3">
+              {{ form_label(form.content, '<i class="fas fa-align-left me-2" style="color:#7ba77b"></i>Contenu', {
+                  'label_attr': { 'class': 'form-label fw-bold' },
+                  'label_html': true
+              }) }}
+              {{ form_widget(form.content, { 'attr': { 'class': 'form-control shadow-sm', 'rows': 8 } }) }}
+            </div>
+
+            <h5 class="form-label">
+              <i class="fas fa-basket-shopping me-2" style="color:#7ba77b"></i>
+              Ingrédients (<span id="ingredient-count">{{ form.recipeIngredients|length }}</span>)
+            </h5>
+
+            <div id="ingredients-wrapper" data-prototype="{{ form_widget(form.recipeIngredients.vars.prototype)|e('html_attr') }}">
+              {% for ingredientForm in form.recipeIngredients %}
+                <div class="ingredient-item shadow-sm mb-3">
+                  {{ form_row(ingredientForm.ingredient, {
+                      'label': '<i class="fas fa-basket-shopping me-2" style="color:#7ba77b"></i> Ingrédient',
+                      'label_html': true,
+                      'attr': { 'class': 'form-select shadow-sm' }
+                  }) }}
+                  {{ form_row(ingredientForm.quantity, {
+                      'label': '<i class="fas fa-balance-scale me-2" style="color:#7ba77b"></i> Quantité',
+                      'label_html': true,
+                      'attr': { 'class': 'form-control shadow-sm' }
+                  }) }}
+                  <button type="button" class="remove-ingredient btn btn-sm mt-2">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Champ d’ajout d’ingrédient personnalisé -->
+            <div class="input-group mb-3">
+              <input type="text" id="new-ingredient" class="form-control shadow-sm" placeholder="Nouvel ingrédient">
+              <button type="button" id="add-ingredient-btn" class="btn btn-outline-success">
+                <i class="fas fa-plus"></i> Ajouter
+              </button>
+            </div>
+
+            <!-- Bouton ajout dynamique -->
+            <button type="button" id="add-ingredient" class="btn btn-sm btn-outline-success mb-3">
+              <i class="fas fa-plus"></i> Ajouter un ingrédient
+            </button>
+          </div>
+        </div>
+
+        <div class="text-end mt-4">
+          {{ form_widget(form.save, {
+            'label': '<i class="fas fa-save me-2"></i> Mettre à jour',
+            'label_html': true,
+            'attr': { 'class': 'btn btn-success btn-lg rounded-3 shadow-sm' }
+          }) }}
+        </div>
+
+        {{ form_end(form) }}
+      </div>
+    </div>
+  </div>
 {% endblock %}

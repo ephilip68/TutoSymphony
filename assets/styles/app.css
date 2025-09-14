@@ -1,3 +1,646 @@
-body {
-    background-color: skyblue;
+ html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f5fff8; /* Vert très clair nature */
+    color: #2f4f4f;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  main {
+  flex: 1;
+    }
+
+  .nav-user-text {
+    font-size: 1.2rem;
+  }
+
+  /* Navbar custom pour Nature theme */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #eafaf1;
+    box-shadow: 0 8px 20px rgba(122, 167, 123, 0.15);
+    padding: 1rem 2rem;
+    backdrop-filter: blur(8px);
+    border-radius: 0 0 12px 12px;
+    z-index: 1030;
+  }
+
+  .navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #4a7c59 !important;
+    letter-spacing: 1.5px;
+  }
+
+  /* Animation sous les liens de menu */
+.navbar-light .navbar-nav .nav-link {
+  position: relative;
+  color: #2f4f4f;
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding-bottom: 5px;
+  transition: color 0.3s ease;
+  
+  
 }
+
+.navbar-light .navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background-color: #7ba77b;
+  transition: width 0.4s ease;
+}
+
+.navbar-light .navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.active {
+  color: #7ba77b;
+}
+
+/* Effet lumineux au hover de lien */
+.navbar-light .navbar-nav .nav-link:hover {
+  text-shadow: 0 0 6px rgba(122, 167, 123, 0.4);
+}
+
+  .btn-primary {
+    background-color: #4a7c59;
+    border-color: #4a7c59;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #386c47;
+    border-color: #386c47;
+    color: white;
+  }
+
+  .btn-outline-primary {
+    background-color: transparent;
+    border-color: #4a7c59;
+    color: #4a7c59;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #4a7c59;
+    border-color: #4a7c59;
+    color: white;
+  }
+
+  .btn-outline-primary:focus,
+  .btn-outline-primary:active,
+  .btn-outline-primary.active {
+    background-color: #386c47 !important;
+    border-color: #386c47 !important;
+    box-shadow: none !important;
+    color: white !important;
+  }
+
+  .bg-footer {
+    background-color: #eafaf1; /* Vert clair doux */
+    border-top: 1px solid #cfe8db;
+    }
+
+.footer-link {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2f4f4f;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #4a7c59;
+  text-decoration: underline;
+}
+
+.social-icon {
+  color: #4a7c59;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #3a684c;
+  transform: scale(1.2);
+}
+/* Mega-dropdown Recettes */
+.navbar-nav > .dropdown.position-static > .dropdown-menu {
+  border: none;
+  padding: 1.5rem 2rem;
+  background-color: #f5fff8;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 0 0 8px 8px;
+  width: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 100%;
+  transform: none !important;
+}
+
+/* Colonnes dans mega menu */
+.navbar-nav > .dropdown.position-static .dropdown-menu .col-md-4 h6 {
+  font-weight: 700;
+  color: #2a7a2a;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Liste sans puces */
+.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled {
+  padding-left: 0;
+}
+
+/* Items de la liste */
+.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li {
+  margin-bottom: 0.5rem;
+}
+
+/* Liens dans mega menu */
+.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item {
+  padding: 0.25rem 0;
+  color: #3a3a3a;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+  border-radius: 0;
+}
+
+/* Hover sur liens */
+.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item:hover,
+.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item:focus {
+  color: #2a7a2a;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+/* Icones dans titres (marges) */
+.navbar-nav > .dropdown.position-static .dropdown-menu h6 i {
+  color: #2a7a2a;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Suppression de la flèche par défaut du dropdown mega */
+.navbar-nav > .dropdown.position-static > a.dropdown-toggle::after {
+  display: none;
+}
+
+/************************************************* Home *****************************************************/
+ body.home-page {
+      font-family: 'Open Sans', sans-serif;
+      background:
+        #f5fff8;
+      background-blend-mode: overlay;
+      color: #2f4f4f; /* Vert sapin foncé */
+    }
+
+    .hero {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(232, 245, 233, 0.5); /* voile vert pâle semi-transparent */
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      padding: 2rem;
+      color: #2e4d2e;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 20px rgba(46, 77, 46, 0.15);
+    }
+
+    .hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 3.8rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      color: #2e7d32; /* vert foncé */
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      color: #4a7c4a;
+      font-weight: 600;
+    }
+
+    .btn-hero {
+      background-color: #388e3c; /* vert moyen */
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 50px;
+      box-shadow: 0 6px 22px rgba(56, 142, 60, 0.3);
+      transition: background-color 0.3s ease;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-hero:hover {
+      background-color: #2e7d32; /* vert foncé */
+      color: white;
+    }
+    
+    /* Carrousel recettes */
+    .recipe-card {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(46, 77, 46, 0.15);
+      color: #2e4d2e;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .recipe-card img {
+      width: 100%;
+      height: 60%;
+      object-fit: cover;
+      border-top-left-radius: 1.5rem;
+      border-top-right-radius: 1.5rem;
+      box-shadow: inset 0 0 50px rgba(56, 142, 60, 0.15);
+    }
+
+    .recipe-card .card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #f1f8f1;
+    }
+
+    .recipe-card .card-body h5 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #2e7d32;
+      margin-bottom: 0.8rem;
+    }
+
+    .recipe-card .card-body p {
+      flex-grow: 1;
+      color: #4a7c4a;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .recipe-card .btn-primary {
+      align-self: flex-start;
+      background-color: #388e3c;
+      padding: 12px 28px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 6px 20px rgba(56, 142, 60, 0.3);
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      color: white;
+    }
+
+    .recipe-card .btn-primary:hover {
+      background-color: #2e7d32;
+      color: white;
+    }
+
+    /* Carousel controls */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      filter: invert(37%) sepia(64%) saturate(416%) hue-rotate(83deg) brightness(90%) contrast(90%);
+      background-color: rgba(56, 142, 60, 0.8);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
+
+    .carousel-control-prev-icon:hover,
+    .carousel-control-next-icon:hover {
+      background-color: #2e7d32;
+    }
+
+    /* Section catégories */
+    .category-card {
+      background: #f1f8f1;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 28px rgba(46, 77, 46, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;  /* largeur max d’une card */
+    }
+
+    .category-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 18px 48px rgba(56, 142, 60, 0.3);
+    }
+
+    .category-card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      border-top-left-radius: 1.5rem;
+      border-top-right-radius: 1.5rem;
+      box-shadow: inset 0 0 50px rgba(56, 142, 60, 0.2);
+      transition: transform 0.4s ease;
+    }
+
+    .category-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .category-card-body {
+      padding: 1.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #2e4d2e;
+    }
+
+    .category-card-body h5 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin-bottom: 0.7rem;
+      color: #4a7c59;
+      letter-spacing: 1.2px;
+      text-align: center;
+    }
+
+    .category-card-body p {
+      flex-grow: 1;
+      font-size: 1.05rem;
+      margin-bottom: 1.3rem;
+      color: #4a7c4a;
+      line-height: 1.4;
+     align-items: center;
+    }
+
+    .category-card-body a.btn {
+      align-self: center;
+      background-color: #4a7c59;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .category-card-body a.btn:hover {
+      background-color: #386c47;
+    }
+
+    .btn-contribution {
+    background-color: #4a7c59;
+    border-color: #4a7c59;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-contribution:hover {
+    background-color: #386c47;
+    border-color: #386c47;
+    color: white;
+  }
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .fade-in-section.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+.testimonial-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(46, 77, 46, 0.15);
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 600px;
+  text-align: center;
+}
+
+.star-rating {
+  color: #4caf50;
+  font-size: 1.25rem;
+}
+
+/******************************************* Formulaire edit/create user ***********************************************/
+.card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 40px rgba(122, 167, 123, 0.25);
+    border: 1px solid rgba(122, 167, 123, 0.15);
+    color: #2f4f4f;
+}
+
+.card-header {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.form-label {
+    color: #4a7c59 !important;
+    font-weight: 700;
+}
+
+/* Style global pour inputs / selects / textarea */
+.form-control, 
+.form-select, 
+    textarea.form-control {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #2f4f4f;
+    border: 1px solid #7ba77b;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+/* Effet lumineux au focus (global) */
+.form-control:focus, 
+.form-select:focus, 
+    textarea.form-control:focus {
+    border-color: #7ba77b !important;
+    box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.4) !important;
+    background-color: #fff !important;
+    outline: none;
+}
+
+.form-control.filled:not(:focus),
+.form-select.filled:not(:focus),
+    textarea.form-control.filled:not(:focus) {
+    background-color: #e6f2e9 !important;
+    border-color: #7ba77b !important;
+    color: #2f4f4f !important;
+}
+
+h4 {
+color: #4a7c59;
+    font-weight: 600;
+    border-bottom: 2px solid #7ba77b;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.2rem;
+}
+
+h5.form-label {
+    font-size: 1rem;
+    color: #4a7c59 !important;
+    font-weight: 700;
+}
+
+.ingredient-item {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    border-radius: 1rem;
+    padding: 1rem;
+    color: #fff;
+}
+
+.ingredient-item label {
+    color: #fff !important;
+    font-weight: 600;
+}
+
+.ingredient-item .form-control,
+.ingredient-item .form-select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #a5d6a7;
+    color: #2f4f4f;
+    font-weight: 600;
+}
+
+.ingredient-item .form-control:focus,
+.ingredient-item .form-select:focus {
+    border-color: #fff !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.4) !important;
+    background-color: #fff !important;
+}
+
+.remove-ingredient {
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+.remove-ingredient:hover {
+    background: rgba(255, 255, 255, 0.85);
+    color: #4a7c59;
+}
+
+.btn-outline-success {
+    color: #4a7c59;
+    border-color: #7ba77b;
+    font-weight: 600;
+}
+.btn-outline-success:hover {
+    background: #4a7c59;
+    color: #fff;
+}
+
+.btn-success.btn-lg {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    border: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+.btn-success.btn-lg:hover {
+    background: linear-gradient(90deg, #3d684a, #4a7c59);
+    color: #fff;
+}
+
+.ingredient-count {
+    color: #7ba77b;
+    font-weight: bold;
+}
+
+input[type="file"].form-control {
+    padding: 0.4rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+input[type="file"].form-control::file-selector-button {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem 0 0 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+
+input[type="file"].form-control::file-selector-button:hover {
+    background: linear-gradient(90deg, #3d684a, #4a7c59);
+}
+
+.ingredient-item select.form-select {
+    appearance: none;         /* enlève le style natif */
+    -webkit-appearance: none; /* Safari */
+    -moz-appearance: none;    /* Firefox */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a7c59' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2rem; /* espace pour la flèche */
+}
+

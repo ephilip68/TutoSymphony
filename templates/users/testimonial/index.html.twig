@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un témoignage{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(122, 167, 123, 0.65), rgba(74, 124, 89, 0.65)) fixed,
+        url('{{ asset("images/background.jpg") }}') no-repeat center center fixed;
+      background-size: cover;
+      background-blend-mode: overlay;
+      color: #2f4f4f;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 40px rgba(122, 167, 123, 0.25);
+      border: 1px solid rgba(122, 167, 123, 0.15);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-header {
+      background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    }
+
+    .card-header h2 {
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      margin: 0;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+
+    .form-label {
+      color: #4a7c59 !important;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 1px solid #7ba77b;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      display: block;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control:focus {
+      border-color: #7ba77b !important;
+      box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.4) !important;
+      background-color: #fff !important;
+      outline: none;
+    }
+
+    .btn-submit {
+      background: linear-gradient(90deg, #4a7c59, #7ba77b);
+      border: none;
+      font-weight: bold;
+      color: #fff;
+      padding: 12px 30px;
+      border-radius: 50px;
+      display: block;
+      margin: 1.5rem auto 0;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(90deg, #3d684a, #4a7c59);
+      color: #fff;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div class="container" style="padding: 2rem 0; padding-top: 160px;">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+      
+      <!-- HEADER -->
+      <div class="card-header text-white rounded-top-4 py-3 px-4">
+        <h2><i class="fas fa-comment-dots"></i> Ajouter un témoignage</h2>
+      </div>
+
+      <div class="card-body p-4">
+        {{ form_start(form) }}
+
+        <!-- CHAMPS EMPILÉS -->
+        <div class="mb-3">
+          {{ form_label(form.text, '<i class="fas fa-comment-alt me-2" style="color:#7ba77b"></i>Votre témoignage', {
+            'label_attr': {'class':'form-label fw-bold'},
+            'label_html': true
+          }) }}
+          {{ form_widget(form.text, {'attr': {'class':'form-control shadow-sm', 'rows':5, 'placeholder':'Écrivez votre avis ici...'}}) }}
+          {{ form_errors(form.text) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_label(form.rating, '<i class="fas fa-star me-2" style="color:#7ba77b"></i>Note (1 à 5)', {
+            'label_attr': {'class':'form-label fw-bold'},
+            'label_html': true
+          }) }}
+          {{ form_widget(form.rating, {'attr': {'class':'form-control shadow-sm', 'min':1, 'max':5}}) }}
+          {{ form_errors(form.rating) }}
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-paper-plane me-2"></i> Envoyer mon avis
+        </button>
+
+        {{ form_end(form) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

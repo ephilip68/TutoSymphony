@@ -1,0 +1,25 @@
+{# templates/partials/_newsletter.html.twig #}
+<div id="newsletter-container" class="row justify-content-center text-center mb-5">
+  <div class="col-md-8">
+    <h4 class="fw-bold mb-3">🌱 Abonnez-vous à notre newsletter</h4>
+    <p class="mb-4 text-muted">Recevez chaque semaine des idées de recettes saines et gourmandes directement dans votre boîte mail.</p>
+
+    <div id="newsletter-messages"></div> {# Conteneur séparé pour les messages #}
+
+    {{ form_start(newsletterForm, {
+        action: path('newsletter_subscribe'),
+        method: 'POST',
+        attr: {
+            'id': 'newsletter-form',
+            'class': 'd-flex flex-column flex-sm-row justify-content-center gap-2',
+            'novalidate': 'novalidate'
+        }
+    }) }}
+      {{ form_widget(newsletterForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Votre email'}}) }}
+      <button class="btn btn-success px-4 d-flex align-items-center gap-2" type="submit" id="newsletter-submit">
+          <span class="btn-text">S'abonner</span>
+          <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="newsletter-spinner"></span>
+      </button>
+    {{ form_end(newsletterForm) }}
+  </div>
+</div>
