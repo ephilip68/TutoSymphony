@@ -31,7 +31,7 @@ class Testimonial
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'testimonials')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?User $user = null;
 
     public function getId(): ?int
@@ -77,7 +77,7 @@ class Testimonial
         return $this->user;
     }
 
-    public function setUser(User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
         return $this;

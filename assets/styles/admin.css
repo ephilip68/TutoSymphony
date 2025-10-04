@@ -1,4 +1,4 @@
- html, body {
+  html, body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -12,9 +12,11 @@
     flex-direction: column;
     min-height: 100vh;
   }
+
   main {
   flex: 1;
-    }
+  padding-top: 90px;
+  }
 
   .nav-user-text {
     font-size: 1.2rem;
@@ -30,7 +32,6 @@
     box-shadow: 0 8px 20px rgba(122, 167, 123, 0.15);
     padding: 1rem 2rem;
     backdrop-filter: blur(8px);
-    border-radius: 0 0 12px 12px;
     z-index: 1030;
   }
 
@@ -116,6 +117,36 @@
     color: white !important;
   }
 
+  .search-form {
+    margin: 0;                /* supprime toute marge par défaut */
+    display: flex;
+    align-items: center;      /* aligne verticalement */
+  }
+
+  /* Bouton recherche */
+  .btn-search {
+      height: 38px;             /* même hauteur que les autres boutons */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;                /* annule toute marge implicite */
+      line-height: 1;           /* évite décalage vertical */
+  }
+
+  /* Icône FontAwesome */
+  .btn-search i {
+      display: inline-flex;     /* permet un centrage exact */
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      font-size: 16px;          /* ajuste la taille si nécessaire */
+  }
+
+  /* Supprime les marges internes du form pour que tout soit parfaitement aligné */
+  .search-form button {
+      margin: 0;
+  }
+
   .bg-footer {
     background-color: #eafaf1; /* Vert clair doux */
     border-top: 1px solid #cfe8db;
@@ -144,22 +175,24 @@
   color: #3a684c;
   transform: scale(1.2);
 }
-/* Mega-dropdown Recettes */
-.navbar-nav > .dropdown.position-static > .dropdown-menu {
+
+/* Mega-style dropdown utilisateur */
+.user-dropdown.position-static > .dropdown-menu {
   border: none;
   padding: 1.5rem 2rem;
   background-color: #f5fff8;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   border-radius: 0 0 8px 8px;
-  width: 100% !important;
-  left: 0 !important;
-  right: 0 !important;
+  width: 300px; /* largeur fixe pour utilisateur */
+  left: auto !important;
+  right: 10% !important;
   top: 100%;
   transform: none !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Colonnes dans mega menu */
-.navbar-nav > .dropdown.position-static .dropdown-menu .col-md-4 h6 {
+/* Titres */
+.user-dropdown .dropdown-menu h6 {
   font-weight: 700;
   color: #2a7a2a;
   margin-bottom: 1rem;
@@ -168,18 +201,23 @@
   letter-spacing: 0.05em;
 }
 
-/* Liste sans puces */
-.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled {
+.user-dropdown .dropdown-menu h6 i {
+  color: #2a7a2a;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Liste items */
+.user-dropdown .dropdown-menu ul.list-unstyled {
   padding-left: 0;
 }
 
-/* Items de la liste */
-.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li {
+.user-dropdown .dropdown-menu ul.list-unstyled li {
   margin-bottom: 0.5rem;
 }
 
-/* Liens dans mega menu */
-.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item {
+.user-dropdown .dropdown-menu ul.list-unstyled li a.dropdown-item {
   padding: 0.25rem 0;
   color: #3a3a3a;
   font-weight: 500;
@@ -188,25 +226,26 @@
   border-radius: 0;
 }
 
-/* Hover sur liens */
-.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item:hover,
-.navbar-nav > .dropdown.position-static .dropdown-menu ul.list-unstyled li a.dropdown-item:focus {
+/* Hover */
+.user-dropdown .dropdown-menu ul.list-unstyled li a.dropdown-item:hover,
+.user-dropdown .dropdown-menu ul.list-unstyled li a.dropdown-item:focus {
   color: #2a7a2a;
   background-color: transparent;
   text-decoration: underline;
 }
 
-/* Icones dans titres (marges) */
-.navbar-nav > .dropdown.position-static .dropdown-menu h6 i {
-  color: #2a7a2a;
-  margin-right: 0.5rem;
-  font-size: 1.2rem;
-  vertical-align: middle;
+/************************************************ Alert ********************************************************/
+
+.flash-messages {
+    margin-top: 1rem; /* espace entre la navbar et le flash */
+    margin-bottom: 1rem;
+    transition: all 0.3s ease; /* animation douce quand l'alerte apparaît/disparaît */
 }
 
-/* Suppression de la flèche par défaut du dropdown mega */
-.navbar-nav > .dropdown.position-static > a.dropdown-toggle::after {
-  display: none;
+/* Style bootstrap par défaut */
+.flash-messages .alert {
+    width: 100%;
+    margin-bottom: 0; /* pour éviter double marge */
 }
 
 /*************************************** Formulaire ************************************/
@@ -259,6 +298,157 @@
     background-color: #e6f2e9 !important;
     border-color: #7ba77b !important;
     color: #2f4f4f !important;
+}
+
+/* Container global Choices */
+.choices {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Input interne et inner */
+.choices__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-height: 38px;
+  padding: 0.375rem 0.6rem;
+  border: 1px solid #7ba77b;
+  border-radius: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Focus / ouvert */
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+  border-color: #7ba77b;
+  box-shadow: 0 0 0 0.25rem rgba(122,167,123,0.4);
+  border: 1px solid #7ba77b;
+  border-radius: 0.75rem;
+}
+
+/* Placeholder */
+.choices__item.choices__placeholder {
+  color: #2f4f4f;
+  font-weight: 600;
+}
+
+/* Input pour taper (multi-select) */
+.choices__input {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  outline: none;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.choices__input::placeholder {
+  color: #2f4f4f;
+  font-weight: 600;
+  font-size: 1rem;
+  opacity: 1;
+}
+
+/* Tags sélectionnés */
+.choices__list--multiple .choices__item {
+  background-color: #e6f2e9;
+  border: 1px solid #7ba77b;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.15rem;
+  color: #2f4f4f;
+  font-weight: 600;
+  font-size: .8rem;
+}
+
+/* Dropdown */
+.choices__list--dropdown {
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem; /* espace avec l'input */
+}
+
+/* Flèche */
+.choices[data-type*="select-multiple"]::after,
+.choices[data-type*="select-one"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  width: 1rem;
+  height: 0.75rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232f4f4f' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* --- Animation fermeture (fadeOut simulée) --- */
+.choices__list--dropdown.is-active {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.choices__list--dropdown {
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem; /* espace avec l'input */
+}
+
+.choices__list.choices__list--dropdown {
+  margin-top: 4px; /* petit espace comme Bootstrap */
+  border-radius: 0.5rem; /* arrondi doux */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* ombre légère */
+  animation: fadeIn 0.2s ease-in-out; /* animation */
+}
+
+.choices__list--dropdown .choices__item {
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  color: #2f4f4f;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.choices__list--dropdown .choices__item.is-highlighted {
+  background-color: #e6f2e9 !important; /* ton vert doux */
+  color: #2f4f4f !important;
+}
+
+.choices[data-type*=select-multiple] .choices__button, .choices[data-type*=text] .choices__button {
+    position: relative;
+    display: inline-block;
+    margin: 0 -4px 0 8px;
+    padding-left: 16px;
+    border-left: 1px solid #003642;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjMmY0ZjRmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==");
+    background-size: 10px;
+    width: 8px;
+    line-height: 1;
+    opacity: .75;
+    border-radius: 0;
+}
+
+/* --- Animation ouverture (fadeIn) --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 h4 {
@@ -372,5 +562,85 @@ input[type="file"].form-control::file-selector-button:hover {
     background-position: right 0.75rem center;
     background-size: 1rem;
     padding-right: 2rem; /* espace pour la flèche */
+}
+
+/**************************************************** Pagination ******************************************************/
+
+.pagination {
+    gap: 8px;
+    padding-left: 0;
+    justify-content: center; /* centre la pagination */
+    list-style: none;
+    margin: 1rem 0;
+}
+
+.pagination .page-item .page-link {
+    border: 1px solid #7ba77b;
+    color: #4a7c59;
+    font-weight: 600;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    border-color: #4a7c59;
+    color: #fff;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f2f8f3;
+    color: #4a7c59;
+    border-color: #4a7c59;
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.pagination .page-link:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.4); /* halo doux vert */
+    border-color: #4a7c59;
+}
+
+/* Liens triables */
+a.sortable {
+    color: #000; /* couleur texte normale */
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a.sortable:hover {
+    color: #7ba77b; /* couleur au hover */
+}
+
+/* Quand trié ascendant */
+a.asc {
+    color: #000 !important;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Quand trié descendant */
+a.desc {
+    color: #000 !important;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Ajouter icône tri */
+a.asc::after {
+    content: '▲'; /* flèche vers le haut */
+    margin-left: 0.3rem;
+}
+
+a.desc::after {
+    content: '▼'; /* flèche vers le bas */
+    margin-left: 0.3rem;
 }
 

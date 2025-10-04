@@ -1,0 +1,40 @@
+{% for recipe in recipes %}
+    {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
+    <div class="recipe-card">
+        {% if imagePath %}
+            <img src="{{ imagePath | imagine_filter('thumb_700x_auto') }}" alt="{{ recipe.title }}">
+        {% else %}
+            <img src="{{ asset('images/default-recipe.webp') | imagine_filter('thumb_700x_auto') }}" alt="Recette par défaut">
+        {% endif %}
+
+        <div class="recipe-card-body">
+            <h2 class="recipe-title">{{ recipe.title }}</h2>
+
+            <div class="recipe-meta">
+                🗂️ {{ recipe.category.name|title|default('Sans catégorie') }}<br>
+                ⏱️ 
+                {% if recipe.duration is not empty %}
+                    {% if recipe.duration < 60 %}
+                        {{ recipe.duration }} min
+                    {% else %}
+                        {{ (recipe.duration // 60) }} h
+                        {% if recipe.duration % 60 != 0 %}
+                            {{ (recipe.duration % 60) }} min
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    Durée non précisée
+                {% endif %}
+                <br>
+                📅 {{ recipe.createdAt|date('d/m/Y') }}<br>
+                👨‍🍳 Ajoutée par {{ recipe.author.username|title }}
+            </div>
+
+            <a href="{{ path('user.recipe.recipe_show', {'slug': recipe.slug}) }}" class="btn-see">
+                Voir la recette
+            </a>
+        </div>
+    </div>
+{% else %}
+    <p class="text-center text-muted">Aucune recette trouvée dans cette catégorie.</p>
+{% endfor %}

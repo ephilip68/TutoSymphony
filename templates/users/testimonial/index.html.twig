@@ -15,57 +15,6 @@
       color: #2f4f4f;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: 1.5rem;
-      box-shadow: 0 15px 40px rgba(122, 167, 123, 0.25);
-      border: 1px solid rgba(122, 167, 123, 0.15);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .card-header {
-      background: linear-gradient(90deg, #4a7c59, #7ba77b);
-    }
-
-    .card-header h2 {
-      color: #fff;
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      margin: 0;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      justify-content: center;
-    }
-
-    .form-label {
-      color: #4a7c59 !important;
-      font-weight: 700;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-control {
-      background-color: rgba(255, 255, 255, 0.95);
-      border: 1px solid #7ba77b;
-      border-radius: 0.75rem;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      display: block;
-      width: 100%;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-control:focus {
-      border-color: #7ba77b !important;
-      box-shadow: 0 0 0 0.25rem rgba(122, 167, 123, 0.4) !important;
-      background-color: #fff !important;
-      outline: none;
-    }
-
     .btn-submit {
       background: linear-gradient(90deg, #4a7c59, #7ba77b);
       border: none;
@@ -87,11 +36,15 @@
 {% endblock %}
 
 {% block body %}
-  <div class="container" style="padding: 2rem 0; padding-top: 160px;">
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+    <div class="container flash-messages">
+        {% include 'partials/flash.html.twig' %}
+    </div>
+  <div class="container" style="padding-top: 2rem;">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="max-width: 600px;
+      margin: 0 auto;">
       
       <!-- HEADER -->
-      <div class="card-header text-white rounded-top-4 py-3 px-4">
+      <div class="card-header text-white text-center rounded-top-4 py-3 px-4">
         <h2><i class="fas fa-comment-dots"></i> Ajouter un témoignage</h2>
       </div>
 
@@ -117,7 +70,7 @@
           {{ form_errors(form.rating) }}
         </div>
 
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn btn-success btn-lg rounded-4 d-block mx-auto">
           <i class="fas fa-paper-plane me-2"></i> Envoyer mon avis
         </button>
 

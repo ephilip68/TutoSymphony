@@ -7,7 +7,7 @@
 
   <!-- Bootstrap & FontAwesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet" />
 
@@ -15,7 +15,6 @@
             {{ encore_entry_link_tags('admin') }}
 
 {% endblock %}
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 {% block javascripts %}  
             {{ encore_entry_script_tags('admin') }}
 
@@ -47,69 +46,11 @@
               </li>
 
               <!-- Recettes (dropdown amélioré) -->
-              <li class="nav-item dropdown position-static">
-              <a class="nav-link dropdown-toggle" href="#" id="recettesDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                  Recettes
-              </a>
-              <div class="dropdown-menu w-100 p-4" aria-labelledby="recettesDropdown"
-                  style="background-color: #f5fff8; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                  <div class="row gx-5 gy-4">
-
-                  <!-- Colonne 1 -->
-                  <div class="col-12 col-md-3">
-                      <h6 class="text-success fw-bold mb-3">
-                      <i class="fas fa-book-open me-2"></i> Toutes les recettes
-                      </h6>
-                      <ul class="list-unstyled">
-                      <li><a class="dropdown-item py-1" href="{{ path('admin.recipe.index') }}">Toutes les recettes</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Recettes populaires</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Recettes végétariennes</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Recettes de saison</a></li>
-                      </ul>
-                  </div>
-
-                  <!-- Colonne 2 -->
-                  <div class="col-12 col-md-3">
-                      <h6 class="text-success fw-bold mb-3">
-                      <i class="fas fa-seedling me-2"></i> Par catégorie
-                      </h6>
-                      <ul class="list-unstyled">
-                      <li><a class="dropdown-item py-1" href="#">Entrées</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Plats principaux</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Desserts</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Boissons</a></li>
-                      </ul>
-                  </div>
-
-                  <!-- Colonne 3 -->
-                  <div class="col-12 col-md-3">
-                      <h6 class="text-success fw-bold mb-3">
-                      <i class="fas fa-clock me-2"></i> Spécialités
-                      </h6>
-                      <ul class="list-unstyled">
-                      <li><a class="dropdown-item py-1" href="#">Rapide & facile</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Sans gluten</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Vegan</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Sans lactose</a></li>
-                      </ul>
-                  </div>
-
-                  <!-- Colonne 4 -->
-                  <div class="col-12 col-md-3">
-                      <h6 class="text-success fw-bold mb-3">
-                      <i class="fas fa-leaf me-2"></i> Par saisons
-                      </h6>
-                      <ul class="list-unstyled">
-                      <li><a class="dropdown-item py-1" href="#">Printemps</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Été</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Automne</a></li>
-                      <li><a class="dropdown-item py-1" href="#">Hiver</a></li>
-                      </ul>
-                  </div>
-
-                  </div>
-              </div>
+              <li class="nav-item">
+                <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin.recipe.' ? 'active' : '' }}" 
+                href="{{ path('admin.recipe.index') }}">
+                    Recettes
+                </a>
               </li>
 
               <!-- Catégories -->
@@ -133,23 +74,30 @@
 
             <!-- Utilisateur connecté / non connecté -->
             <div class="d-flex align-items-center nav-user-text">
-              {% if app.user %}
-                <div class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    {{ app.user.username|default('Profil')|title }}
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="#">Mon profil</a></li>
-                    <li><a class="dropdown-item" href="#">Mes recettes</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                  </ul>
-                </div>
-              {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-outline-primary me-2">Connexion</a>
-                <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
-              {% endif %}
+                {% if app.user %}
+                    <div class="dropdown user-dropdown position-static">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+                          aria-expanded="false">
+                          {{ app.user.username|default('Profil')|title }}
+                        </a>
+                        <div class="dropdown-menu">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6><i class="fas fa-user-circle"></i> Mon compte</h6>
+                                    <ul class="list-unstyled">
+                                        <li><a class="dropdown-item" href="{{ path('user.profile') }}">Mon profil</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('user.recipe.my_recipes') }}">Mes recettes</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary me-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+                {% endif %}
             </div>
           </div>
         </div>
@@ -225,6 +173,9 @@
         <small class="text-muted">© {{ "now"|date("Y") }} MonSite Recettes — Tous droits réservés.</small>
       </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+        crossorigin="anonymous"></script>
   </body>
 </html>
 

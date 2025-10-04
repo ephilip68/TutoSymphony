@@ -7,44 +7,111 @@ use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
+use App\Service\IngredientImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\SpoonacularService;
 
-class RecipeController extends AbstractController
+#[Route('/user/recettes', name: 'user.recipe.')]
+final class RecipeController extends AbstractController
 {
-    #[Route('/recettes', name: 'recipe_list')]
-    public function index(RecipeRepository $recipeRepository): Response
+    #[Route(name: 'list')]
+    public function index(RecipeRepository $repository, Request $request): Response
     {
-         $recipes = $recipeRepository->findAll();
+        $user = $this->getUser();
+        $favoriteIds = [];
+
+        if ($user instanceof \App\Entity\User) {
+            $favoriteIds = array_map(fn($r) => $r->getId(), $user->getFavorites()->toArray());
+        }
+
+        $page = $request->query->getInt('page', 1);
+        $recipes = $repository->paginateRecipesUsers($page);
+
+        // Si c’est une requête AJAX, on retourne uniquement le partial
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('users/category/recipes_list.html.twig', [
+                'recipes' => $recipes,
+            ]);
+        }
 
         return $this->render('users/recipe/index.html.twig', [
+            'recipes' => $recipes,
+            'favoriteIds' => $favoriteIds,
+        ]);
+    }
+
+    #[Route('/user/mes-recettes', name: 'my_recipes')]
+    public function myRecipes(RecipeRepository $recipeRepository, Request $request): Response
+    {
+        $user = $this->getUser();
+
+        $page = $request->query->getInt('page', 1);
+        $recipes= $recipeRepository->paginateByUsers($user, $page);
+
+        // Si c’est une requête AJAX, on retourne uniquement le partial
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('users/category/recipes_list.html.twig', [
+                'recipes' => $recipes,
+            ]);
+        }
+
+        return $this->render('users/recipe/myRecipes.html.twig', [
             'recipes' => $recipes,
         ]);
     }
 
-    #[Route('/recette/{slug}', name: 'recipe_show')]
-    public function show(string $slug, RecipeRepository $recipeRepository): Response
+    #[Route('/user/nouveauté', name: 'new')]
+    public function NewRecipes(RecipeRepository $recipeRepository, Request $request): Response
     {
-        $recipe = $recipeRepository->findOneBy(['slug' => $slug]);
 
-        if (!$recipe) {
-            throw $this->createNotFoundException('Recette introuvable');
+        $page = $request->query->getInt('page', 1);
+        $recipes = $recipeRepository->paginateLatest(12, $page);
+
+        // Si c’est une requête AJAX, on retourne uniquement le partial
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('users/category/recipes_list.html.twig', [
+                'recipes' => $recipes,
+            ]);
         }
 
-        return $this->render('users/recipe/recipe.html.twig', [
-            'recipe' => $recipe,
+        return $this->render('users/recipe/new.html.twig', [
+            'recipes' => $recipes,
         ]);
     }
 
-    #[Route('/recipe/new', name: 'recipe_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    #[Route('/user/coup-de-coeur', name: 'favorites')]
+    public function favorites(Request $request, RecipeRepository $recipeRepository): Response
+    {
+        $user = $this->getUser();
+        $favoriteIds = [];
+
+        if ($user instanceof \App\Entity\User) { 
+            // Pour faciliter l'affichage (coeur actif) - liste d'ids favoris
+            $favoriteIds = array_map(fn($r) => $r->getId(), $user->getFavorites()->toArray());
+        }
+
+        $page = $request->query->getInt('page', 1);
+        $recipes = $recipeRepository->paginateFavoritesForUser($user, $page);
+
+       
+
+        return $this->render('users/recipe/favorites.html.twig', [
+            'recipes' => $recipes,
+            'favoriteIds' => $favoriteIds,
+        ]);
+    }
+
+    #[Route('/new', name: 'recipe_new')]
+    public function new(Request $request, EntityManagerInterface $em, IngredientImageService $ingredientImageService): Response
     {
         $recipe = new Recipe();
-
+        
         // ✅ Pré-remplir 1 ligne "ingrédient" uniquement à l'affichage initial
         if ($request->isMethod('GET') && $recipe->getRecipeIngredients()->isEmpty()) {
             $ri = new RecipeIngredient();
@@ -72,6 +139,13 @@ class RecipeController extends AbstractController
                 if (!$ingredient) {
                     $ingredient = new Ingredient();
                     $ingredient->setName($c['name']);
+
+                     // 🖼️ Récupérer une image depuis pixabay
+                    $imageUrl = $ingredientImageService->getIngredientImage($c['name']);
+                    if ($imageUrl) {
+                        $ingredient->setImageUrl($imageUrl);
+                        $ingredient->setUpdatedAt(new \DateTimeImmutable());
+                    }
                 }
 
                 // 🔹 Toujours mettre à jour l’unité si envoyée
@@ -92,7 +166,7 @@ class RecipeController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Recette créée avec succès !');
-            return $this->redirectToRoute('recipe_list');
+            return $this->redirectToRoute('user.recipe.list');
         }
 
         return $this->render('users/recipe/create.html.twig', [
@@ -100,7 +174,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/recipe/{id}/edit', name: 'recipe_edit')]
+    #[Route('/{id}/edit', name: 'recipe_edit')]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('RECIPE_EDIT', $recipe);
@@ -122,7 +196,7 @@ class RecipeController extends AbstractController
 
             // On force un tableau indexé
             $customs = array_values($customs);
-
+            
             foreach ($customs as $c) {
                 if (empty($c['name'])) {
                     continue;
@@ -165,16 +239,16 @@ class RecipeController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'La recette a bien été modifiée');
-            return $this->redirectToRoute('recipe_show', ['slug' => $recipe->getSlug()]);
+            return $this->redirectToRoute('user.recipe.recipe_show', ['slug' => $recipe->getSlug()]);
         }
-
+        
         return $this->render('users/recipe/edit.html.twig', [
             'form' => $form->createView(),
             'recipe' => $recipe,
         ]);
     }
-
-    #[Route('/recipe/{id}/delete', name: 'recipe_delete', methods: ['POST'])]
+    
+    #[Route('/{id}/delete', name: 'recipe_delete', methods: ['POST'])]
     public function delete(Request $request, Recipe $recipe, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('RECIPE_DELETE', $recipe);
@@ -185,10 +259,60 @@ class RecipeController extends AbstractController
             $this->addFlash('success', 'Recette supprimée avec succès !');
         }
 
-        return $this->redirectToRoute('recipe_list');
+        return $this->redirectToRoute('user.recipe.list');
     }
 
-    #[Route('/recipe/track/{id}', name: 'recipe_track')]
+    #[Route('/recipe/{id}/favorite', name: 'toggle_favorite', methods: ['POST'])]
+    public function toggleFavorite(Recipe $recipe, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            return $this->json(['error' => 'Non authentifié'], 401);
+        }
+
+        // Vérif CSRF (token envoyé en header X-CSRF-TOKEN)
+        $csrf = $request->headers->get('X-CSRF-TOKEN');
+        if (!$this->isCsrfTokenValid('favorite'.$recipe->getId(), $csrf)) {
+            return $this->json(['error' => 'Token invalide'], 400);
+        }
+
+        if ($user->getFavorites()->contains($recipe)) {
+            $user->removeFavorite($recipe);
+            $em->persist($user);
+            $em->flush();
+
+            return $this->json(['favorited' => false]);
+        }
+
+        $user->addFavorite($recipe);
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json(['favorited' => true]);
+    }
+
+    #[Route('/{slug}', name: 'recipe_show', requirements: ['slug' => '[a-z0-9\-]+'])]
+    public function show(string $slug, RecipeRepository $recipeRepository): Response
+    {
+        $recipe = $recipeRepository->findOneBy(['slug' => $slug]);
+        $user = $this->getUser();
+        $favoriteIds = [];
+
+        if ($user instanceof \App\Entity\User) {
+            $favoriteIds = array_map(fn($r) => $r->getId(), $user->getFavorites()->toArray());
+        }
+
+        if (!$recipe) {
+            throw $this->createNotFoundException('Recette introuvable');
+        }
+
+        return $this->render('users/recipe/recipe.html.twig', [
+            'recipe' => $recipe,
+            'favoriteIds' => $favoriteIds,
+        ]);
+    }
+
+    #[Route('/track/{id}', name: 'recipe_track')]
     public function track(int $id, RecipeRepository $recipeRepo, EntityManagerInterface $em ): RedirectResponse 
     {
         
@@ -198,13 +322,14 @@ class RecipeController extends AbstractController
         throw $this->createNotFoundException('Recette non trouvée');
     }
 
-    // Incrémenter le nombre de clics
-    $recipe->setClicks($recipe->getClicks() + 1);
-    $em->flush();
+        // Incrémenter le nombre de clics
+        $recipe->setClicks($recipe->getClicks() + 1);
+        $em->flush();
 
-    // Rediriger vers la page de la recette
-    return $this->redirectToRoute('recipe_show', ['slug' => $recipe->getSlug()]);
-}
+        // Rediriger vers la page de la recette
+        return $this->redirectToRoute('recipe_show', ['slug' => $recipe->getSlug()]);
+    }
 
+    
 }
 

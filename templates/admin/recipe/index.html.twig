@@ -3,18 +3,22 @@
 {% block title %} Toutes les recettes {% endblock %}
 
 {% block body %}
-<div class="container" style="padding: 2rem 0; padding-top: 160px;">
+<div class="container flash-messages">
+    {% include 'partials/flash.html.twig' %}
+</div>
+<div class="container" style="padding-top: 2rem;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-success">Toutes les recettes</h1>
-        <a class="btn btn-success" href="{{ path('admin.recipe.create') }}">
+        <h1 class="fw-bold" style="color: #2e7d32; font-family: 'Playfair Display', serif;">Toutes les recettes</h1>
+        <a class="btn btn-primary" href="{{ path('admin.recipe.create') }}">
             <i class="fas fa-plus"></i> Nouvelle recette
         </a>
     </div>
 
-    <div class="table-responsive shadow-sm">
+    <div class="table-responsive">
         <table class="table table-hover align-middle text-center" style="--bs-table-hover-bg: #e6f4ea;">
             <thead class="table-success">
                 <tr>
+                    <th> {{ knp_pagination_sortable(recipes, 'ID', 'r.id') }}</th>
                     <th>Image</th>
                     <th>Titre</th>
                     <th>Catégorie</th>
@@ -25,6 +29,9 @@
             <tbody>
             {% for recipe in recipes %}
                 <tr>
+                    <td>
+                        {{ recipe.id}}
+                    </td>
                     <td>
                         {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
                         {% if imagePath %}
@@ -61,6 +68,10 @@
             {% endfor %}
             </tbody>
         </table>
+        <div class="d-flex">
+            {{ knp_pagination_render(recipes)}}
+        </div>
     </div>
 </div>
+        
 {% endblock %}

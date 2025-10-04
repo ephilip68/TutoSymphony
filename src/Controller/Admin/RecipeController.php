@@ -25,7 +25,9 @@ final class RecipeController extends AbstractController
     public function index(Request $request, RecipeRepository $repository, EntityManagerInterface $em): Response
     {
         // $this->denyAccessUnlessGranted('ROLE_USER');
-        $recipes = $repository->findWithDurationLowerThan(60);
+        $page = $request->query->getInt('page', 1);
+        $recipes = $repository->paginateRecipes($page);
+        
         // $em->remove($recipes[0]); Supprimer une recette en base donnée
         // $em->flush();
 
@@ -42,7 +44,7 @@ final class RecipeController extends AbstractController
         // $em->flush();  
 
         return $this->render('admin/recipe/index.html.twig' , [
-            'recipes' => $recipes
+            'recipes' => $recipes,
         ]);
     }
     

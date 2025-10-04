@@ -25,15 +25,11 @@ class CategoryType extends AbstractType
             ->add('name', TextType::class, [
                 'empty_data' => ''
             ])
-            ->add('thumbnailFile', FileType::class)
-            ->add('slug', TextType::class, [
+            ->add('thumbnailFile', FileType::class,[
                 'required' => false,
-                'empty_data' => ''
             ])
-             ->add('save', SubmitType::class, [
-                'label' => 'Enregistrer'
-            ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->listenerFactory->autoSlug('name'))
+            
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->autoSlug('name'))
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps())
         ;
     }

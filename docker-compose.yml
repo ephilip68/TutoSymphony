@@ -31,13 +31,13 @@ services:
   node:
     image: node:20
     container_name: tutosymphony-node
-    working_dir: /var/www/html
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules  # empêche la collision avec ton dossier local
     environment:
-      # Améliore la détection des changements sur Windows/WSL
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
-    volumes:
-      - .:/var/www/html
     command: >
       sh -c "npm ci || npm install && npm run dev -- --watch"
     depends_on:

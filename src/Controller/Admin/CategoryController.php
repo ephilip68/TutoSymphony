@@ -23,7 +23,7 @@ final class CategoryController extends AbstractController
     public function index(CategoryRepository $repository): Response
     {
         return $this->render('admin/category/index.html.twig' , [
-            'categories' => $repository->findAll()
+            'categories' => $repository->findAllWithCount()
         ]);
     }
     
@@ -33,6 +33,8 @@ final class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
          if ($form->isSubmitted() && $form->isValid()){
+            $category->setCreatedAt(new \DateTimeImmutable());
+            $category->setUpdateAt(new \DateTimeImmutable());
             $em->persist($category);
             $em->flush();
             $this->addFlash('success', 'La categorie a bien été créée');
@@ -50,6 +52,7 @@ final class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
+            $category->setUpdateAt(new \DateTimeImmutable());
             $em->flush();
             $this->addFlash('success', 'La category a bien été modifiée');
             return $this->redirectToRoute('admin.category.index');

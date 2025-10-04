@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ season.name }} : Recettes {% endblock %}
+
+{% block body %}
+<div class="container flash-messages">
+    {% include 'partials/flash.html.twig' %}
+</div>
+<section class="page-content">
+  <h1 class="section-title">🌱 Recettes - {{ season.name|title }} 🌾</h1>
+
+  <div class="recipes-grid" id="recipe-list"
+      data-current-page="{{ recipes.getCurrentPageNumber() }}"
+      data-max-page="{{ recipes.getPageCount() }}"
+      data-total="{{ recipes.getTotalItemCount() }}"
+      data-season-slug="{{ season.slug }}"
+      data-url="{{ path('user.seasons.recipes', {'slug': season.slug}) }}">
+      
+      {% include 'users/category/recipes_list.html.twig' with {'recipes': recipes} %}
+  </div>
+
+  {% set totalRecipes = recipes.getTotalItemCount() %}
+  <div class="text-center mt-4">
+       {% if totalRecipes > 6 %}
+        <button class="btn-load-more" id="load-more-recipes">
+            <span class="btn-text">🍃 Charger plus de recettes</span>
+        </button>
+    {% endif %}
+  </div>
+
+  <div class="text-center my-3" id="loading" style="display:none;">
+    <span class="spinner-border" role="status"></span>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,47 @@
+{# templates/bundles/KnpPaginatorBundle/Pagination/bootstrap_v5_pagination.html.twig #}
+{% if pageCount > 1 %}
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            {# Bouton Previous #}
+            {% if previous is defined %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): previous})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+            {% endif %}
+
+            {# Pages numérotées #}
+            {% for page in pagesInRange %}
+                {% if page != current %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {# Bouton Next #}
+            {% if next is defined %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): next})) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo; </span>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endif %}

@@ -30,7 +30,7 @@ class Category
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Inalid slug')]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -80,7 +80,7 @@ class Category
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

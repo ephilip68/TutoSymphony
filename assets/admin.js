@@ -1,7 +1,7 @@
 
 
 import './styles/admin.css';
-
+import Choices from 'choices.js';
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -148,4 +148,76 @@ document.addEventListener('DOMContentLoaded', function () {
     wrapper.querySelectorAll('.remove-ingredient').forEach(handleRemove);
     updateCount();
 });
+
+/************************************************** Select Perso *************************************************************/
+document.addEventListener('DOMContentLoaded', function() {
+    const seasonSelect = document.getElementById('recipe_seasons');
+    if (!seasonSelect) return;
+
+    const choices = new Choices(seasonSelect, {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Sélectionnez une ou plusieurs saisons',
+        searchEnabled: false,
+        shouldSort: false,
+        allowHTML: true,
+    });
+
+    const container = seasonSelect.closest('.choices').querySelector('.choices__inner');
+    const input = container.querySelector('.choices__input--cloned');
+
+    const dropdownList = () => container.querySelector('.choices__list--dropdown');
+
+    const hasValue = () => choices.getValue(true).length > 0;
+
+    // Placeholder : cacher si valeur
+    const updatePlaceholder = () => {
+        if (!input) return;
+        input.placeholder = hasValue() ? '' : 'Sélectionnez une ou plusieurs saisons';
+        };
+
+    // Au chargement initial
+    updatePlaceholder();
+
+    // --- Placeholder quand on ajoute ou supprime un tag
+    choices.passedElement.element.addEventListener('addItem', updatePlaceholder);
+    choices.passedElement.element.addEventListener('removeItem', updatePlaceholder);
+
+    const openDropdown = () => {
+        choices.showDropdown();
+        container.classList.add('is-open', 'is-focused');
+        if (input) input.focus();
+    };
+
+    const closeDropdown = () => {
+        choices.hideDropdown();
+        container.classList.remove('is-open', 'is-focused');
+    };
+
+    const toggleDropdown = () => {
+        container.classList.contains('is-open') ? closeDropdown() : openDropdown();
+    };
+
+    // Clic sur toute la zone de l'input / inner / flèche
+    container.addEventListener('click', function(e) {
+        if (dropdownList() && dropdownList().contains(e.target)) return;
+        if (e.target.closest('.choices__button')) return; // suppression de tag
+        e.preventDefault();
+        e.stopPropagation();
+        toggleDropdown();
+    });
+
+    // Clic en dehors = fermer
+    document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) closeDropdown();
+    });
+
+    // Esc pour fermer
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDropdown();
+    });
+});
+
+console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
 

@@ -15,7 +15,7 @@
     <div class="hero-content">
       <h1>Savourez vos envies</h1>
       <p>Découvrez des recettes gourmandes et inspirantes à chaque visite</p>
-      <a href="{{ path('recipe_list') }}" class="btn btn-primary btn-hero">Voir les recettes</a>
+      <a href="{{ path('user.recipe.list') }}" class="btn btn-primary btn-hero">Voir les recettes</a>
     </div>
   </section>
 
@@ -35,7 +35,7 @@
           {% for recipe in recipes %}
             {% set imagePath = vich_uploader_asset(recipe, 'thumbnailFile') %}
             <div class="carousel-item {% if loop.first %}active{% endif %}">
-              <div class="card recipe-card mx-auto">
+              <div class="card recipe-cards mx-auto">
                 {% if imagePath %}
                   <img src="{{ imagePath | imagine_filter('thumb_700x400') }}" alt="Image de {{ recipe.title }}">
                 {% else %}
@@ -43,11 +43,11 @@
                 {% endif %}
 
                 <div class="card-body">
-                  <h5>{{ recipe.title }}</h5>
-                  <p>{{ recipe.content|slice(0, 120) ~ '...' }}</p>
-                  <a href="{{ path('recipe_show', { slug: recipe.slug }) }} ">
-                    Voir la recette >
-                  </a>
+                    <h5>{{ recipe.title }}</h5>
+                    <p>{{ recipe.content|slice(0, 110) ~ '...' }}</p>
+                    <a href="{{ path('user.recipe.recipe_show', { slug: recipe.slug }) }}" class="see-recipes">
+                        Voir la recette <i class="fas fa-chevron-right"></i>
+                    </a>
                 </div>
               </div>
             </div>
@@ -70,7 +70,7 @@
 </section>
 
 <!-- Section catégories -->
-<section class="fade-in-section" style="width: 100%; margin-top: 0; padding: 2rem 0; background-color: #4a7c59;" >
+<section class="fade-in-section" style="width: 100%; margin-top: 0; padding: 1rem 0 3rem 0; background-color: #4a7c59;" >
   <div class="container my-4">
     <h2 class="text-center mb-4 fw-bold" style="font-family: 'Playfair Display', serif; font-size: 2.3rem; color: #fff;">
       Nos Catégories
@@ -91,7 +91,7 @@
             <div class="category-card-body text-center">
               <h5>{{ category.name }}</h5>
               <p>{{ category.description|default('Description non disponible') }}</p>
-              <a href="{{ path('recipes_by_category', { slug: category.slug }) }}" class="btn">Voir les recettes</a>
+              <a href="{{ path('user.category.recipes_by_category', { slug: category.slug }) }}" class="btn">Voir les recettes</a>
             </div>
           </div>
         </div>
@@ -101,22 +101,22 @@
 </section>
 
   <!-- Appel à contribution -->
-  <section class="contribution-section py-5 fade-in-section" style="background: linear-gradient(135deg, #eaf5eb 0%, #d0e3ce 100%);">
-    <div class="container text-center">
+  <section class="contribution-section fade-in-section" style="background: linear-gradient(135deg, #eaf5eb 0%, #d0e3ce 100%); padding: 1rem 0 2rem 0;">
+    <div class="container text-center my-4">
       <h2 class="mb-4 fw-bold" style="font-family: 'Playfair Display', serif; font-size: 2.3rem;">Contribution</h2>
       <h3 style="color: #4a7c59;">Partagez votre propre recette !</h3>
       <p class="mb-4" style="font-size: 1.2rem; color: #3e5c4e;">
         Vous avez une idée gourmande à faire découvrir ? Rejoignez notre communauté de passionnés et inspirez les autres !
       </p>
-      <a class="btn btn-primary btn-lg btn-contribution" href="{{ path('recipe_new')}}">
+      <a class="btn btn-primary btn-lg btn-contribution" href="{{ path('user.recipe.recipe_new')}}">
         <i class="fas fa-utensils me-2"></i> Envoyer ma recette
       </a>
     </div>
   </section>
 
   <!-- Témoignages -->
- <section class="testimonials-section py-5 fade-in-section">
-  <div class="container">
+ <section class="testimonials-section fade-in-section" style="padding: 1rem 0 2rem 0;">
+  <div class="container my-4">
     <h2 class="text-center mb-4 fw-bold" style="font-family: 'Playfair Display', serif; font-size: 2.3rem;">
       Témoignages
     </h2>
@@ -147,7 +147,11 @@
 
               <!-- Auteur (nom d'utilisateur dynamique) -->
               <footer class="blockquote-footer text-center mt-3" style="color: #4a7c4a; font-weight: 600;">
-                {{ testimonial.user.username|title }}
+                {% if testimonial.user %}
+                    {{ testimonial.user.username|title }}
+                {% else %}
+                    Utilisateur introuvable
+                {% endif %}
               </footer>
 
             </div>
@@ -179,29 +183,28 @@
 </section>
 
 
-  <!-- Statistiques -->
-  <section class="stats-section py-5 text-white fade-in-section" style="background-color: #4a7c59;">
-    <div class="container">
-      <h2 class="text-center mb-4 fw-bold" style="font-family: 'Playfair Display', serif; font-size: 2.3rem;">Statistiques</h2>
-      <h3 class="text-center mb-4" style="color: #e2f2e2;">Une communauté qui grandit chaque jour</h3>
-      <div class="row text-center">
+<!-- Statistiques -->
+<section class="stats-section py-5 text-white fade-in-section" style="background-color: #4a7c59;">
+  <div class="container">
+    <h2 class="text-center mb-4 fw-bold" style="font-family: 'Playfair Display', serif; font-size: 2.3rem;">Statistiques</h2>
+    <h3 class="text-center mb-4" style="color: #e2f2e2;">Une communauté qui grandit chaque jour</h3>
+    <div class="row text-center">
 
-        <div class="col-md-4 mb-4">
-          <div class="stat-number fs-1 fw-bold" data-count="1200">0</div>
-          <p class="fs-5">Recettes partagées</p>
-        </div>
+      <div class="col-md-4 mb-4">
+        <div class="stat-number fs-1 fw-bold" data-count="{{ recipesCount }}">0</div>
+        <p class="fs-5">Recettes partagées</p>
+      </div>
 
-        <div class="col-md-4 mb-4">
-          <div class="stat-number fs-1 fw-bold" data-count="350">0</div>
-          <p class="fs-5">Contributeurs actifs</p>
-        </div>
+      <div class="col-md-4 mb-4">
+        <div class="stat-number fs-1 fw-bold" data-count="{{ contributorsCount }}">0</div>
+        <p class="fs-5">Contributeurs actifs</p>
+      </div>
 
-        <div class="col-md-4 mb-4">
-          <div class="stat-number fs-1 fw-bold" data-count="98">0</div>
-          <p class="fs-5">% de satisfaction</p>
-        </div>
-
+      <div class="col-md-4 mb-4">
+        <div class="stat-number fs-1 fw-bold" data-count="{{ satisfactionRate }}">0</div>
+        <p class="fs-5">% de satisfaction</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 {% endblock %}

@@ -33,7 +33,7 @@ class Recipe
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Invalid slug')]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\Length(min: 5)]
@@ -76,9 +76,23 @@ class Recipe
     #[ORM\Column(type: 'integer')]
     private int $clicks = 0;
 
+    /**
+     * @var Collection<int, Season>
+     */
+    #[ORM\ManyToMany(targetEntity: Season::class, mappedBy: 'recipes')]
+    private Collection $seasons;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favorites')]
+    private Collection $favoritedBy;
+
     public function __construct()
     {
         $this->recipeIngredients = new ArrayCollection();
+        $this->seasons = new ArrayCollection();
+        $this->favoritedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,7 +111,7 @@ class Recipe
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
@@ -245,6 +259,60 @@ class Recipe
     public function incrementClicks(): self
     {
         $this->clicks++;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Season>
+     */
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+
+    public function addSeason(Season $season): static
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons->add($season);
+            $season->addRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeason(Season $season): static
+    {
+        if ($this->seasons->removeElement($season)) {
+            $season->removeRecipe($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getFavoritedBy(): Collection
+    {
+        return $this->favoritedBy;
+    }
+
+    public function addFavoritedBy(User $favoritedBy): static
+    {
+        if (!$this->favoritedBy->contains($favoritedBy)) {
+            $this->favoritedBy->add($favoritedBy);
+            $favoritedBy->addFavorite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoritedBy(User $favoritedBy): static
+    {
+        if ($this->favoritedBy->removeElement($favoritedBy)) {
+            $favoritedBy->removeFavorite($this);
+        }
+
         return $this;
     }
 }

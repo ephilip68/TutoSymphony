@@ -11,8 +11,7 @@
       background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') center center / cover no-repeat;
       color: #2f4f4f;
       margin: 0;
-      height: 100%;
-      overflow: hidden;
+      height: 90%;
       position: relative;
     }
 
@@ -48,7 +47,6 @@
     input.form-control:-webkit-autofill:hover,
     input.form-control:-webkit-autofill:focus {
         background-color: #e6f2e9 !important; /* vert pastel clair */
-        color: #2f4f4f !important; /* texte foncé */
         -webkit-box-shadow: 0 0 0px 1000px #e6f2e9 inset !important; /* fond vert appliqué */
         border-color: #7ba77b !important; /* bordure verte douce */
         transition: background-color 5000s ease-in-out 0s;
@@ -57,18 +55,16 @@
 {% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-center align-items-center min-vh-100">
-  <div class="container" style="max-width: 700px;">
-    <div style="
+<div class="d-flex justify-content-center align-items-center min-vh-90" style="padding-top: 3rem;">
+  <div class="container" style="max-width: 700px;
       background: rgba(255, 255, 255, 0.7);
       border-radius: 1.5rem;
       padding: 3rem 3.5rem;
       box-shadow: 0 15px 40px rgba(122, 167, 123, 0.2);
       border: 1px solid rgba(122, 167, 123, 0.15);
-      backdrop-filter: blur(10px);
-    ">
+      backdrop-filter: blur(10px);">
 
-      <h1 class="h3 mb-4 text-center fw-bold d-flex align-items-center justify-content-center gap-2" style="
+      <h1 class="h3 mb-5 text-center fw-bold d-flex align-items-center justify-content-center gap-2" style="
         font-size: 2rem; 
         color: #4a7c59;
         font-family: 'Playfair Display', serif;

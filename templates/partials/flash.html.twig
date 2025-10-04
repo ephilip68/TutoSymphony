@@ -1,5 +1,10 @@
-{% for type, messages in app.flashes %}
-<div class="alert alert-{{ type }}">
-    {{ messages | join('. ')}}
-</div>
-{% endfor%}
+{% for label, messages in app.flashes %}
+    <div class="container flash-messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}

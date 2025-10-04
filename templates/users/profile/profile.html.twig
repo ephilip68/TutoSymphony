@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+/* Cover */
+.profile-cover {
+    position: relative;
+    width: 100%;
+    height:350px;
+    overflow: hidden;
+    border-radius: 0 0 1.5rem 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    background: url('{{ asset('images/cover.jpg') }}') top/cover no-repeat;
+}
+
+/* Avatar */
+.profile-avatar {
+    position: relative;
+    margin-top: -80px; /* chevauche la cover */
+    text-align: center;
+}
+
+.profile-avatar img {
+    border: 4px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    background-color: #fff;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.profile-avatar h2 {
+    margin-top: 1rem;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #2f4f4f;
+}
+
+.profile-avatar p {
+    margin: 0;
+    color: #4a7c59;
+    font-weight: 600;
+}
+
+/* Cartes */
+.profile-page .card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 1.2rem;
+    border: 1px solid rgba(122, 167, 123, 0.2);
+    box-shadow: 0 12px 30px rgba(122, 167, 123, 0.25);
+    color: #2f4f4f;
+    overflow: hidden;
+}
+
+.profile-page .card-header {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.8rem 1rem;
+    border-bottom: none;
+}
+
+/* Boutons */
+.profile-page .btn-outline-success {
+    color: #4a7c59;
+    border-color: #7ba77b;
+    font-weight: 600;
+}
+
+.profile-page .btn-outline-success:hover {
+    background: #4a7c59;
+    color: #fff;
+}
+
+.profile-page .btn-success {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    border: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.profile-page .btn-success:hover {
+    background: linear-gradient(90deg, #3d684a, #4a7c59);
+    color: #fff;
+}
+
+/* Onglets navigation */
+.profile-tabs .nav-tabs {
+    border-bottom: none;
+    justify-content: center;
+}
+
+.profile-tabs .nav-tabs .nav-link {
+    color: #4a7c59;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+    border-radius: 1rem 1rem 0 0;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(122, 167, 123, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-tabs .nav-tabs .nav-link:hover {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    color: #fff;
+}
+
+.profile-tabs .nav-tabs .nav-link.active {
+    background: linear-gradient(90deg, #4a7c59, #7ba77b);
+    color: #fff;
+    border-color: #7ba77b #7ba77b transparent #7ba77b;
+    box-shadow: 0 4px 12px rgba(122, 167, 123, 0.25);
+}
+
+/* Contenu onglets */
+.tab-content {
+    margin-top: 1.5rem;
+}
+
+.tab-pane .card {
+    margin-bottom: 1.5rem;
+}
+
+/* Listes recettes */
+.profile-page .list-group-item {
+    border: none;
+    padding: 0.8rem 1rem;
+    transition: background 0.2s ease;
+}
+
+.profile-page .list-group-item:hover {
+    background: #f2f8f3;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-page">
+
+    <!-- Cover + avatar -->
+    <div class="profile-cover"></div>
+    <div class="profile-avatar text-center">
+        <img src="https://ui-avatars.com/api/?name={{ app.user.username }}&background=7ba77b&color=fff&size=150" alt="{{ app.user.username }}">
+        <h2>{{ app.user.username|title }}</h2>
+    </div>
+
+    <!-- Onglets navigation -->
+    <div class="profile-tabs container mt-5">
+        <ul class="nav nav-tabs border-0" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="infos-tab" data-bs-toggle="tab" data-bs-target="#infos" type="button" role="tab">Mes Infos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recettes-tab" data-bs-toggle="tab" data-bs-target="#recettes" type="button" role="tab">Mes Recettes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="activite-tab" data-bs-toggle="tab" data-bs-target="#activite" type="button" role="tab">Activité</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Contenu onglets -->
+    <div class="tab-content container mt-4">
+
+        <!-- Infos -->
+        <div class="tab-pane fade show active" id="infos" role="tabpanel">
+            <div class="card p-4 mb-4">
+                <div class="card-header">Informations personnelles</div>
+                <div class="card-body">
+                    <p><strong>Nom d'utilisateur :</strong> {{ app.user.username|title }}</p>
+                    <p><strong>Email :</strong> {{ app.user.email }}</p>
+                    <a href="#" class="btn btn-success">Modifier mon profil</a>
+                </div>
+            </div>
+        </div>
+
+    <!-- Recettes --> 
+    <div class="tab-pane fade" id="recettes" role="tabpanel">
+        <div class="card p-4 mb-4" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); border-radius: 1.2rem; border: 1px solid rgba(122,167,123,0.2); box-shadow: 0 12px 30px rgba(122,167,123,0.25); color: #2f4f4f;">
+            <div class="card-header" style="background: linear-gradient(90deg, #4a7c59, #7ba77b); color: #fff; font-weight: bold; font-size: 1.2rem; padding: 0.8rem 1rem; border-bottom: none;">Mes recettes</div>
+            <div class="table-responsive">
+                <table class="table align-middle w-100 table-hover" style="--bs-table-hover-bg: #e6f4ea;>
+                    <tbody>
+                        {% for recipe in recipes %}
+                            <tr style="background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); border-radius: 0.75rem; transition: transform 0.2s, box-shadow 0.2s;">
+                                <td style="width: 70px; vertical-align: middle; padding: 0.75rem 1rem;">
+                                    {% if recipe.thumbnail %}
+                                        <img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') | imagine_filter('thumb_80x80') }}" 
+                                            alt="{{ recipe.title }}" 
+                                            style="width:60px; height:60px; object-fit:cover; border-radius:0.5rem; border:1px solid #7ba77b;">
+                                    {% else %}
+                                        <img src="{{ asset('images/default-recipe.webp') | imagine_filter('thumb_80x80') }}" 
+                                            alt="Image par défaut" 
+                                            style="width:60px; height:60px; object-fit:cover; border-radius:0.5rem; border:1px solid #7ba77b;">
+                                    {% endif %}
+                                </td>
+                                <td style="vertical-align: middle; padding: 0.75rem 1rem; font-weight: 600; color:#4a7c59;"><strong>{{ recipe.title }}</strong></td>
+                                <td style="vertical-align: middle; padding: 0.75rem 1rem; font-weight: 600; color:#2f4f4f;">Publié le {{ recipe.createdAt ? recipe.createdAt|date('d/m/Y') : 'Non renseignée' }}</td>
+                                <td style="width: 70px; vertical-align: middle; padding: 0.75rem 1rem;">
+                                    <a href="{{ path('user.recipe.recipe_show', {'slug': recipe.slug}) }}" 
+                                    class="btn btn-outline-success btn-sm" 
+                                    style="color: #4a7c59; border-color: #7ba77b; font-weight:600;"
+                                    onmouseover="this.style.background='#4a7c59'; this.style.color='#fff';" 
+                                    onmouseout="this.style.background=''; this.style.color='#4a7c59';">
+                                    Voir
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-muted text-center" style="padding: 0.75rem 1rem;">Aucune recette publiée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Activité -->
+        <div class="tab-pane fade" id="activite" role="tabpanel">
+            <div class="card p-4 mb-4">
+                <div class="card-header">Mon activité</div>
+                <p class="text-muted">Historique des actions, likes, commentaires (à compléter plus tard).</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

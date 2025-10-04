@@ -1,0 +1,8 @@
+{% for season in seasons %}
+  <li>
+    <a class="dropdown-item py-1"
+       href="{{ path('user.seasons.recipes', { slug: season.slug }) }}">
+       {{ season.name }}
+    </a>
+  </li>
+{% endfor %}

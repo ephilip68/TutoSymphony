@@ -16,6 +16,16 @@ class TestimonialRepository extends ServiceEntityRepository
         parent::__construct($registry, Testimonial::class);
     }
 
+    public function getSatisfactionRate(): int
+    {
+        $avg = $this->createQueryBuilder('t')
+            ->select('AVG(t.rating)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // On ramène la note moyenne (/5) en %
+        return round(($avg / 5) * 100);
+    }
     //    /**
     //     * @return Testimonial[] Returns an array of Testimonial objects
     //     */

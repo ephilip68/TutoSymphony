@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Recipe;
+use App\Entity\Season;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -16,6 +17,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Form\RecipeIngredientType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints\Count;
 
 class RecipeType extends AbstractType
 {
@@ -30,21 +32,32 @@ class RecipeType extends AbstractType
             ->add('title', TextType::class, [
                 'empty_data' => '',
             ])
-            ->add('slug', TextType::class, [
-                'required' => false,
-            ])
             ->add('thumbnailFile', FileType::class, [
                 'required' => false,
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
+                'placeholder' => 'Choisir une catégorie',
             ])
             ->add('slogan', TextType::class, [
                 'required' => false,
                 'empty_data' => '',  // évite le null
             ])
-                ->add('content', TextareaType::class, [
+             ->add('seasons', EntityType::class, [
+                'class' => Season::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => false,
+                'by_reference' => false, // nécessaire pour ManyToMany
+                'constraints' => [
+                    new Count([
+                        'min' => 1,
+                        'minMessage' => 'Veuillez sélectionner au moins une saison.',
+                    ]),  
+                ],
+            ])
+            ->add('content', TextareaType::class, [
                 'label' => 'Étapes de préparation',
                 'attr' => [
                     'rows' => 8,
@@ -65,7 +78,7 @@ class RecipeType extends AbstractType
             ])
             ->add('save', SubmitType::class)
             
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->listenerFactory->autoSlug('title'))
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->autoSlug('title'))
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps())
         ;
     }

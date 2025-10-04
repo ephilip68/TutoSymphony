@@ -54,10 +54,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Testimonial::class, mappedBy: 'user')]
     private Collection $testimonials;
 
+    /**
+     * @var Collection<int, Recipe>
+     */
+    #[ORM\ManyToMany(targetEntity: Recipe::class, inversedBy: 'favoritedBy')]
+    private Collection $favorites;
+
     public function __construct()
     {
         $this->recipes = new ArrayCollection();
         $this->testimonials = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,12 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
-        if ($this->email == 'elsa@gmail.com'){
-            $roles[] = 'ROLE_ADMIN';
-        }
         return array_unique($roles);
     }
 
@@ -224,6 +226,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $testimonial->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Recipe>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Recipe $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Recipe $favorite): static
+    {
+        $this->favorites->removeElement($favorite);
 
         return $this;
     }

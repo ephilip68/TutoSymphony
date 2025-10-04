@@ -1,100 +1,108 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin.html.twig' %}
 
 {% block title %}Gestion des utilisateurs{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white text-center">
-            <h3 class="mb-0">Tableau de bord des utilisateurs</h3>
-        </div>
-        <div class="card-body p-4">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle text-center">
-                    <thead class="table-light">
-                        <tr class="text-uppercase">
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Date d'inscription</th>
-                            <th>Rôles</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                            <tr>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>
-                                    {% if user.createdAt is defined %}
-                                        {{ user.createdAt|date('d/m/Y H:i') }}
-                                    {% else %}
-                                        <span class="text-muted">Non renseignée</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if user.roles is not empty %}
-                                        <span class="badge bg-info text-dark">{{ user.roles|join('</span> <span class="badge bg-info text-dark">')|raw }}</span>
-                                    {% else %}
-                                        <span class="text-muted">Aucun</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <!-- Bouton pour ouvrir la modal -->
-                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRoleModal{{ user.id }}">
-                                        <i class="bi bi-shield-lock"></i> Modifier
-                                    </button>
+    <div class="container flash-messages">
+        {% include 'partials/flash.html.twig' %}
+    </div>
 
-                                    <!-- Modal Bootstrap avec style edit.html.twig -->
-                                    <div class="modal fade" id="editRoleModal{{ user.id }}" tabindex="-1" aria-labelledby="modalLabel{{ user.id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow-lg position-relative">
-                                                <!-- Bouton close ajusté -->
-                                                <button type="button" class="btn-close position-absolute" style="top: 1.5rem; right: 1.5rem; width: 1.2rem; height: 1.2rem; z-index: 1051;"  data-bs-dismiss="modal" aria-label="Fermer"></button>
-                                                <div class="modal-body p-0">
-                                                    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100%; padding: 1.5rem;">
-                                                        <div class="card shadow-lg w-100" style="max-width: 500px;">
-                                                            <div class="card-body p-4">
-                                                                <h2 class="text-center mb-4">Modifier les rôles</h2>
-                                                                <h5 class="text-center text-muted mb-3">
-                                                                    Utilisateur : <strong>{{ user.username }}</strong>
-                                                                </h5>
+    <div class="container" style="padding-top: 2rem;">
+        <div class="text-center mb-4">
+            <h1 class="fw-bold" style="color: #2e7d32; font-family: 'Playfair Display', serif;">Listes des utilisateurs</h1>
+        </div>    
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center" style="--bs-table-hover-bg: #e6f4ea;">
+                        <thead class="table-success">
+                            <tr class="text-uppercase">
+                                <th>{{ knp_pagination_sortable(users, 'Nom', 'u.username') }}</th>
+                                <th>Email</th>
+                                <th>Date d'inscription</th>
+                                <th>Rôles</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td><strong>{{ user.username|title }}</strong></td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% if user.createdAt is defined %}
+                                            {{ user.createdAt|date('d/m/Y H:i') }}
+                                        {% else %}
+                                            <span class="text-muted">Non renseignée</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.roles is not empty %}
+                                            <span class="badge bg-success text-light">{{ user.roles|join('</span> <span class="badge bg-success text-light">')|raw }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Aucun</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <!-- Bouton pour ouvrir la modal -->
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRoleModal{{ user.id }}">
+                                            <i class="bi bi-shield-lock"></i> Modifier
+                                        </button>
 
-                                                                {{ form_start(forms[user.id], {
-                                                                    action: path('admin.users.edit', {'id': user.id}),
-                                                                    method: 'POST'
-                                                                }) }}
+                                    <!-- Modal Bootstrap stylisée -->
+                                        <div class="modal fade" id="editRoleModal{{ user.id }}" tabindex="-1" aria-labelledby="modalLabel{{ user.id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                <div class="modal-content border-0 shadow-lg position-relative bg-light" style="border-radius: 1rem; overflow: hidden;">
+                                                    <!-- Bouton close -->
+                                                    <button type="button" class="btn-close position-absolute" style="top: 1rem; right: 1rem; width: 1.5rem; height: 1.5rem; z-index: 1051;"  data-bs-dismiss="modal" aria-label="Fermer"></button>
 
-                                                                    <div class="mb-3">
-                                                                        {{ form_label(forms[user.id].roles, 'Rôles attribués', {'label_attr': {'class': 'form-label'}}) }}
-                                                                        {{ form_widget(forms[user.id].roles, {'attr': {'class': 'form-select'}}) }}
-                                                                        {{ form_errors(forms[user.id].roles) }}
-                                                                    </div>
+                                                    <div class="modal-body p-0">
+                                                        <div class="container d-flex justify-content-center align-items-center" style="min-height: 100%; padding: 2rem;">
+                                                            <div class="card shadow-lg w-100" style="max-width: 600px; border-radius: 1rem; border: 1px solid #d0e3ce;">
+                                                                <div class="card-body p-4">
+                                                                    <h2 class="text-center mb-4 fw-bold">Modifier les rôles</h2>
+                                                                    <h5 class="text-center mb-3">
+                                                                        Utilisateur : <strong>{{ user.username|title }}</strong>
+                                                                    </h5>
 
-                                                                    <div class="d-grid">
-                                                                        <button type="submit" class="btn btn-success btn-lg">Enregistrer</button>
-                                                                    </div>
+                                                                    {{ form_start(forms[user.id], {
+                                                                        action: path('admin.users.edit', {'id': user.id}),
+                                                                        method: 'POST'
+                                                                    }) }}
 
-                                                                {{ form_end(forms[user.id]) }}
+                                                                        <div class="mb-4">
+                                                                            {{ form_label(forms[user.id].roles, 'Rôles attribués', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                                            {{ form_widget(forms[user.id].roles, {'attr': {'class': 'form-select shadow-sm'}}) }}
+                                                                            {{ form_errors(forms[user.id].roles) }}
+                                                                        </div>
+
+                                                                        <div class="d-grid">
+                                                                            <button type="submit" class="btn btn-success btn-lg fw-bold">
+                                                                                <i class="fas fa-save me-2"></i> Enregistrer
+                                                                            </button>
+                                                                        </div>
+                                                                    {{ form_end(forms[user.id]) }}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- Fin de la modal -->
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="5" class="text-muted">Aucun utilisateur trouvé.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                        <!-- Fin de la modal -->
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-muted">Aucun utilisateur trouvé.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-center mt-5">
+                        {{ knp_pagination_render(users)}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

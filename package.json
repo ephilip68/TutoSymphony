@@ -16,5 +16,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "choices.js": "^11.1.0"
     }
 }

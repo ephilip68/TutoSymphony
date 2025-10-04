@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\UserRoleFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,19 +15,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminUserController extends AbstractController
 {
     #[Route('/', name: 'admin.users.index')]
-    public function index(EntityManagerInterface $em, Request $request): Response
+    public function index(EntityManagerInterface $em, Request $request, UserRepository $repository): Response
     {
-    $users = $em->getRepository(User::class)->findAll();
-    $forms = [];
+        $forms = [];
+        $page = $request->query->getInt('page', 1);
+        $users = $repository->paginateUsers($page);
 
-    foreach ($users as $user) {
-        $forms[$user->getId()] = $this->createForm(UserRoleFormType::class, $user)->createView();
-    }
+        // Crée les formulaires uniquement pour les utilisateurs affichés sur cette page
+        $forms = [];
+        foreach ($users->getItems() as $user) {
+            $forms[$user->getId()] = $this->createForm(UserRoleFormType::class, $user)->createView();
+        }
 
-    return $this->render('admin/admin_user/index.html.twig', [
-        'users' => $users,
-        'forms' => $forms,
-    ]);
+        return $this->render('admin/admin_user/index.html.twig', [
+            'users' => $users,
+            'forms' => $forms
+        ]);
     }
 
     #[Route('/{id}/edit', name: 'admin.users.edit', methods: ['POST'])]

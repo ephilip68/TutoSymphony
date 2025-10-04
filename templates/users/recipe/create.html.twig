@@ -18,7 +18,10 @@
 {% endblock %}
 
 {% block body %}
-  <div class="container" style="padding: 2rem 0; padding-top: 160px;">
+  <div class="container flash-messages">
+        {% include 'partials/flash.html.twig' %}
+  </div>
+  <div class="container" style="padding-top: 2rem;">
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
       <div class="card-header text-white rounded-top-4 py-3">
         <h2 class="mb-0"><i class="fas fa-utensils me-2"></i>Créer une recette</h2>
@@ -40,13 +43,6 @@
             </div>
 
             <div class="mb-3">
-              {{ form_label(form.slug, '<i class="fas fa-link me-2" style="color:#7ba77b"></i>Slug', {
-                'label_attr': { 'class': 'form-label fw-bold' }, 'label_html': true
-              }) }}
-              {{ form_widget(form.slug, { 'attr': { 'class': 'form-control shadow-sm' } }) }}
-            </div>
-
-            <div class="mb-3">
               {{ form_label(form.slogan, '<i class="fas fa-quote-left me-2" style="color:#7ba77b"></i>Slogan', {
                 'label_attr': { 'class': 'form-label fw-bold' }, 'label_html': true
               }) }}
@@ -65,6 +61,13 @@
                 'label_attr': { 'class': 'form-label fw-bold' }, 'label_html': true
               }) }}
               {{ form_widget(form.category, { 'attr': { 'class': 'form-select shadow-sm' } }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.seasons, '<i class="fas fa-leaf me-2" style="color:#7ba77b"></i>Saisons', { 
+                  'label_attr': { 'class': 'form-label fw-bold' }, 'label_html': true
+                }) }}
+                {{ form_widget(form.seasons, { 'attr': { 'class': 'form-select shadow-sm' } }) }}
             </div>
 
             <div class="mb-3">

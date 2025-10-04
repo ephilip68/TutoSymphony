@@ -57,6 +57,10 @@ Encore
         config.corejs = '3.38';
     })
 
+    .configureWatchOptions(options => {
+        options.poll = 1000; // vérifie les changements toutes les 1s
+    })
+
     // enables Sass/SCSS support
     //.enableSassLoader()
 

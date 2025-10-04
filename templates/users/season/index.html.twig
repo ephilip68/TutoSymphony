@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les Recettes - MonSite Recettes{% endblock %}
+
+{% block body %}
+<div class="container flash-messages">
+    {% include 'partials/flash.html.twig' %}
+</div>
+<section class="page-content">
+   <div class="container">
+    <h1 class="section-title">
+      🍂 Saveurs de Saisons 🍁
+    </h1>
+    <div class="row justify-content-center align-items-stretch g-4">
+      {% for season in seasons %}
+        <div class="col-md-3 d-flex justify-content-center">
+          <div class="category-card">
+            {% set imagePath = vich_uploader_asset(season, 'thumbnailFile') %}
+            {% if imagePath %}
+              <img src="{{ imagePath | imagine_filter('thumb_700x_auto') }}" alt="{{ season.name }}">
+            {% else %}
+              <img src="{{ asset('images/default-recipe.webp') }}" alt="Image par défaut">
+            {% endif %}
+            <div class="category-card-body text-center">
+              <h5>{{season.name }}</h5>
+              <p>{{ season.description|default('Description non disponible') }}</p>
+              <a href="{{ path('user.seasons.recipes', {'slug': season.slug}) }}" class="btn">Voir les recettes</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
